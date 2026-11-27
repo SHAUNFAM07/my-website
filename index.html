@@ -3,52 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新手簡易和弦搭配小助手 (Pro Multi-Instrument Edition)</title>
+    <title>新手簡易和弦搭配小助手 — 多樂器真實物理音色與指法圖表版</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #818cf8;
             --primary-hover: #6366f1;
-            --primary-light: rgba(99, 102, 241, 0.15);
+            --primary-light: rgba(99, 102, 241, 0.16);
+            --accent: #34d399;
             --bg-color: #0f172a;
             --card-bg: #1e293b;
+            --panel-bg: #0b1222;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+            --shadow: 0 12px 32px -5px rgba(0, 0, 0, 0.55);
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 30px 15px;
+            padding: 28px 14px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            box-sizing: border-box;
         }
 
         .container {
             width: 100%;
-            max-width: 820px;
+            max-width: 880px;
             background: var(--card-bg);
-            padding: 40px;
+            padding: 36px;
             border-radius: 24px;
             box-shadow: var(--shadow);
-            box-sizing: border-box;
             border: 1px solid var(--border-color);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 1.75rem;
             font-weight: 700;
             margin: 0 0 8px 0;
             background: linear-gradient(135deg, #818cf8, #c084fc);
@@ -58,12 +60,12 @@
 
         p.subtitle {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             margin: 0;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 28px;
         }
 
         .section-label {
@@ -87,6 +89,7 @@
             font-size: 0.8rem;
             margin-right: 8px;
             font-weight: 700;
+            flex-shrink: 0;
         }
 
         .select-wrapper {
@@ -95,17 +98,17 @@
 
         select {
             width: 100%;
-            padding: 14px 18px;
+            padding: 13px 16px;
             border: 2px solid var(--border-color);
             border-radius: 12px;
             font-size: 1rem;
             font-family: inherit;
-            background-color: #0f172a;
+            background-color: var(--panel-bg);
             color: var(--text-main);
             outline: none;
             appearance: none;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
 
         select:focus {
@@ -118,7 +121,7 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             position: absolute;
-            right: 18px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
@@ -130,24 +133,30 @@
         .chord-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
-            gap: 12px;
+            gap: 10px;
         }
 
         .chord-btn {
-            background-color: #0f172a;
+            background-color: var(--panel-bg);
             border: 2px solid var(--border-color);
             border-radius: 14px;
-            padding: 14px 10px;
+            padding: 13px 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.18s ease;
+            user-select: none;
         }
 
         .chord-btn:hover {
-            background-color: #1e293b;
+            background-color: #162036;
             border-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(129, 140, 248, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .chord-btn.selected {
+            background: rgba(99, 102, 241, 0.22);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.22);
         }
 
         .chord-name {
@@ -163,113 +172,209 @@
             font-weight: 500;
         }
 
-        /* 樂器視覺化區塊 */
         .visualizer-box {
-            background: #0f172a;
+            background: var(--panel-bg);
             border: 2px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 22px 18px;
             text-align: center;
         }
 
         .instrument-tabs {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 18px;
             justify-content: center;
         }
 
         .tab-btn {
             background: #1e293b;
-            border: 1px solid var(--border-color);
+            border: 1.5px solid var(--border-color);
             color: var(--text-muted);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 8px 13px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .tab-btn.active {
-            background: var(--primary-light);
+        .tab-btn:hover {
             border-color: var(--primary);
-            color: var(--primary);
+            color: var(--text-main);
         }
 
-        .instrument-panel {
-            display: none;
+        .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #0f172a;
         }
 
-        .instrument-panel.active {
-            display: block;
+        .chord-header-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
         }
 
-        /* 標準鋼琴鍵盤 */
-        .piano-container {
+        .replay-btn {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            padding: 5px 13px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .replay-btn:hover {
+            background: rgba(52, 211, 153, 0.28);
+        }
+
+        /* 2-Octave Piano Keyboard */
+        .piano-scroll {
+            overflow-x: auto;
+            padding: 8px 0;
             display: flex;
             justify-content: center;
-            margin: 15px 0;
-            user-select: none;
         }
 
         .piano-keys {
             display: flex;
             position: relative;
-            height: 120px;
+            height: 126px;
+            width: 504px;
+            flex-shrink: 0;
         }
 
         .p-key {
             position: relative;
             box-sizing: border-box;
-            cursor: default;
             border-radius: 0 0 6px 6px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            transition: background 0.15s;
         }
 
         .p-key.white {
             width: 36px;
-            height: 120px;
+            height: 126px;
             background: #f8fafc;
             border: 1px solid #94a3b8;
+            color: #64748b;
             z-index: 1;
         }
 
         .p-key.white.active {
-            background: #a5b4fc;
+            background: #818cf8;
+            color: #0f172a;
+            border-color: #4f46e5;
+        }
+
+        .p-key.white.root-key {
+            background: #34d399;
+            color: #064e3b;
+            border-color: #059669;
         }
 
         .p-key.black {
             width: 22px;
-            height: 75px;
+            height: 78px;
             background: #1e293b;
-            border: 1px solid #0f172a;
+            border: 1px solid #020617;
+            color: #94a3b8;
             position: absolute;
             z-index: 3;
             border-radius: 0 0 4px 4px;
+            padding-bottom: 5px;
+            font-size: 0.6rem;
         }
 
         .p-key.black.active {
-            background: #818cf8;
+            background: #6366f1;
+            color: #ffffff;
         }
 
-        .display-screen {
-            background: #1e293b;
+        .p-key.black.root-key {
+            background: #10b981;
+            color: #022c22;
+        }
+
+        /* Visual Fretboard Layout */
+        .diagram-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background: #162036;
             border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-family: monospace;
-            color: var(--primary);
-            margin-top: 10px;
-            text-align: left;
-            line-height: 1.6;
-            white-space: pre-line;
+            border-radius: 14px;
+            padding: 18px;
+            margin-top: 8px;
         }
 
-        /* 自定義積木區與其他區塊 */
-        .custom-builder-box {
+        .svg-chart-wrap {
             background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .guide-details {
+            flex: 1;
+            min-width: 250px;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: var(--text-main);
+        }
+
+        .guide-details h4 {
+            margin: 0 0 6px 0;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .guide-details ul {
+            margin: 6px 0 0 0;
+            padding-left: 18px;
+            color: #cbd5e1;
+        }
+
+        .legend-row {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .dot-legend {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        /* Custom Builder */
+        .custom-builder-box {
+            background: var(--panel-bg);
             border: 2px solid var(--border-color);
             border-radius: 14px;
             padding: 16px;
@@ -279,10 +384,10 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            min-height: 45px;
+            min-height: 48px;
             align-items: center;
             margin-bottom: 12px;
-            background: #1e293b;
+            background: #162036;
             padding: 10px;
             border-radius: 10px;
             border: 1px dashed var(--border-color);
@@ -291,12 +396,21 @@
         .slot-tag {
             background: var(--primary-light);
             color: var(--primary);
-            padding: 6px 12px;
+            border: 1px solid rgba(129, 140, 248, 0.35);
+            padding: 6px 10px;
             border-radius: 8px;
             font-weight: 700;
             font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .slot-tag:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.4);
         }
 
         .empty-slot-text {
@@ -305,34 +419,67 @@
             font-style: italic;
         }
 
-        .builder-actions { display: flex; gap: 10px; }
-        .action-btn {
-            flex: 1; padding: 10px; border: none; border-radius: 8px;
-            font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s;
+        .builder-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+
+        .action-btn {
+            flex: 1;
+            min-width: 130px;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
         .btn-primary { background: var(--primary); color: #0f172a; }
         .btn-primary:hover { background: #a5b4fc; }
+        .btn-random { background: rgba(52, 211, 153, 0.2); color: var(--accent); border: 1px solid rgba(52, 211, 153, 0.4); }
+        .btn-random:hover { background: rgba(52, 211, 153, 0.3); }
         .btn-secondary { background: #334155; color: var(--text-main); }
         .btn-secondary:hover { background: #475569; }
 
         .progression-list { display: flex; flex-direction: column; gap: 10px; }
         .progression-item {
-            background: #0f172a; border: 2px solid var(--border-color); border-radius: 12px;
-            padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            background: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 13px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
-        .progression-item:hover { background: #1e293b; border-color: var(--primary); transform: translateX(4px); }
-        .progression-text { font-weight: 700; color: var(--text-main); font-size: 1rem; }
-        .play-tag { font-size: 0.8rem; background: var(--primary-light); color: var(--primary); padding: 5px 12px; border-radius: 20px; font-weight: 600; }
+        .progression-item:hover { background: #162036; border-color: var(--primary); transform: translateX(4px); }
+        .progression-text { font-weight: 700; color: var(--text-main); font-size: 0.98rem; }
+        .progression-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+        .play-tag { font-size: 0.8rem; background: var(--primary-light); color: var(--primary); padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
 
         .preview-box {
-            background: #0f172a; border: 2px dashed var(--border-color); border-radius: 14px;
-            padding: 16px; text-align: center; font-size: 1rem; font-weight: 600; color: var(--primary);
+            background: var(--panel-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 14px;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: var(--primary);
         }
 
         .footer-note {
-            text-align: center; font-size: 0.8rem; color: var(--text-muted);
-            margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 18px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 28px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -341,7 +488,7 @@
     <div class="container">
         <div class="header">
             <h1>新手簡易和弦搭配小助手</h1>
-            <p class="subtitle">全方位弦樂與流行樂器指法對照庫</p>
+            <p class="subtitle">物理建模樂器音色 ＋ 24 大小調順階和弦與視覺化指法圖表</p>
         </div>
 
         <div class="section">
@@ -349,119 +496,89 @@
             <div class="select-wrapper">
                 <select id="keySelect" onchange="onKeyChange()">
                     <optgroup label="— 大調 (Major Keys) —">
-                        <option value="C">C 大調</option>
-                        <option value="G">G 大調</option>
-                        <option value="D">D 大調</option>
-                        <option value="A">A 大調</option>
-                        <option value="E">E 大調</option>
-                        <option value="B">B 大調</option>
-                        <option value="F#">F# 大調</option>
-                        <option value="Db">Db 大調</option>
-                        <option value="Ab">Ab 大調</option>
-                        <option value="Eb">Eb 大調</option>
-                        <option value="Bb">Bb 大調</option>
-                        <option value="F" selected>F 大調</option>
+                        <option value="C" selected>C 大調 (C Major)</option>
+                        <option value="G">G 大調 (G Major)</option>
+                        <option value="D">D 大調 (D Major)</option>
+                        <option value="A">A 大調 (A Major)</option>
+                        <option value="E">E 大調 (E Major)</option>
+                        <option value="B">B 大調 (B Major)</option>
+                        <option value="F#">F# 大調 (F# Major)</option>
+                        <option value="Db">Db 大調 (Db Major)</option>
+                        <option value="Ab">Ab 大調 (Ab Major)</option>
+                        <option value="Eb">Eb 大調 (Eb Major)</option>
+                        <option value="Bb">Bb 大調 (Bb Major)</option>
+                        <option value="F">F 大調 (F Major)</option>
                     </optgroup>
-                    <optgroup label="— 小調 (Minor Keys) —">
-                        <option value="Am">A 小調</option>
-                        <option value="Em">E 小調</option>
-                        <option value="Bm">B 小調</option>
-                        <option value="F#m">F# 小調</option>
-                        <option value="C#m">C# 小調</option>
-                        <option value="G#m">G# 小調</option>
-                        <option value="Ebm">Eb 小調</option>
-                        <option value="Bbm">Bbm 小調</option>
-                        <option value="Fm">F 小調</option>
-                        <option value="Cm">C 小調</option>
-                        <option value="Gm">G 小調</option>
-                        <option value="Dm">D 小調</option>
+                    <optgroup label="— 自然小調 (Natural Minor Keys) —">
+                        <option value="Am">A 小調 (A Minor)</option>
+                        <option value="Em">E 小調 (E Minor)</option>
+                        <option value="Bm">B 小調 (B Minor)</option>
+                        <option value="F#m">F# 小調 (F# Minor)</option>
+                        <option value="C#m">C# 小調 (C# Minor)</option>
+                        <option value="G#m">G# 小調 (G# Minor)</option>
+                        <option value="Ebm">Eb 小調 (Eb Minor)</option>
+                        <option value="Bbm">Bb 小調 (Bb Minor)</option>
+                        <option value="Fm">F 小調 (F Minor)</option>
+                        <option value="Cm">C 小調 (C Minor)</option>
+                        <option value="Gm">G 小調 (G Minor)</option>
+                        <option value="Dm">D 小調 (D Minor)</option>
                     </optgroup>
                 </select>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-label"><span class="step-badge">2</span> 點擊和弦試聽與檢視指法</div>
+            <div class="section-label"><span class="step-badge">2</span> 點擊該調順階和弦試聽並查看指法</div>
             <div id="chordGrid" class="chord-grid"></div>
         </div>
 
         <div class="section">
-            <div class="section-label"><span class="step-badge">3</span> 選擇樂器檢視演奏指法與把位</div>
+            <div class="section-label"><span class="step-badge">3</span> 切換樂器試聽獨立音色與查看指法圖表</div>
             <div class="visualizer-box">
-                <!-- 樂器切換標籤 (包含木吉他、電吉他、電Bass、烏克麗麗、小提琴、大提琴) -->
                 <div class="instrument-tabs">
-                    <button class="tab-btn active" onclick="switchInstrument('piano')">🎹 鋼琴鍵盤</button>
-                    <button class="tab-btn" onclick="switchInstrument('acoustic')">🎸 木吉他</button>
-                    <button class="tab-btn" onclick="switchInstrument('electric')">⚡ 電吉他</button>
-                    <button class="tab-btn" onclick="switchInstrument('bass')">🎸 電 Bass</button>
-                    <button class="tab-btn" onclick="switchInstrument('ukulele')">🎵 烏克麗麗</button>
-                    <button class="tab-btn" onclick="switchInstrument('violin')">🎻 小提琴</button>
-                    <button class="tab-btn" onclick="switchInstrument('cello')">🎻 大提琴</button>
+                    <button class="tab-btn active" data-inst="piano" onclick="switchInstrument('piano')">🎹 鋼琴</button>
+                    <button class="tab-btn" data-inst="acoustic" onclick="switchInstrument('acoustic')">🎸 木吉他</button>
+                    <button class="tab-btn" data-inst="electric" onclick="switchInstrument('electric')">⚡ 電吉他</button>
+                    <button class="tab-btn" data-inst="bass" onclick="switchInstrument('bass')">🎸 電 Bass</button>
+                    <button class="tab-btn" data-inst="ukulele" onclick="switchInstrument('ukulele')">🎵 烏克麗麗</button>
+                    <button class="tab-btn" data-inst="violin" onclick="switchInstrument('violin')">🎻 小提琴</button>
+                    <button class="tab-btn" data-inst="cello" onclick="switchInstrument('cello')">🎻 大提琴</button>
                 </div>
 
-                <div id="activeChordTitle" style="font-weight: 700; color: var(--primary); margin-bottom: 10px; font-size: 1.1rem;">目前選中：尚未選擇</div>
+                <div class="chord-header-bar">
+                    <span id="activeChordTitle" style="font-weight: 700; color: var(--primary); font-size: 1.15rem;">目前選中：C (I 級)</span>
+                    <button class="replay-btn" onclick="replayCurrentChord()">🔊 再聽一次目前樂器音色</button>
+                </div>
+                <div id="chordNotesInfo" style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">和弦組成音：C - E - G (大三和弦)</div>
 
-                <!-- 🎹 鋼琴面板 -->
-                <div id="panel-piano" class="instrument-panel active">
-                    <div class="piano-container">
-                        <div class="piano-keys">
-                            <div class="p-key white" data-note="C"></div>
-                            <div class="p-key black" data-note="C#" style="left: 25px;"></div>
-                            <div class="p-key white" data-note="D"></div>
-                            <div class="p-key black" data-note="D#" style="left: 61px;"></div>
-                            <div class="p-key white" data-note="E"></div>
-                            <div class="p-key white" data-note="F"></div>
-                            <div class="p-key black" data-note="F#" style="left: 133px;"></div>
-                            <div class="p-key white" data-note="G"></div>
-                            <div class="p-key black" data-note="G#" style="left: 169px;"></div>
-                            <div class="p-key white" data-note="A"></div>
-                            <div class="p-key black" data-note="A#" style="left: 205px;"></div>
-                            <div class="p-key white" data-note="B"></div>
-                        </div>
+                <div id="panel-piano">
+                    <div class="piano-scroll">
+                        <div class="piano-keys" id="pianoKeys"></div>
                     </div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">高亮顯示該和弦在 8 度音中的組成音</div>
+                    <div class="legend-row">
+                        <span><i class="dot-legend" style="background:#34d399;"></i>根音 (Root)</span>
+                        <span><i class="dot-legend" style="background:#818cf8;"></i>三音與五音 (3rd & 5th)</span>
+                    </div>
                 </div>
 
-                <!-- 🎸 木吉他面板 -->
-                <div id="panel-acoustic" class="instrument-panel">
-                    <div id="acousticFingering" class="display-screen">請點擊上方和弦查看木吉他按法</div>
-                </div>
-
-                <!-- ⚡ 電吉他面板 -->
-                <div id="panel-electric" class="instrument-panel">
-                    <div id="electricFingering" class="display-screen">請點擊上方和弦查看電吉他按法</div>
-                </div>
-
-                <!-- 🎸 電 Bass 面板 -->
-                <div id="panel-bass" class="instrument-panel">
-                    <div id="bassFingering" class="display-screen">請點擊上方和弦查看電 Bass 根音與分解把位</div>
-                </div>
-
-                <!-- 🎵 烏克麗麗面板 -->
-                <div id="panel-ukulele" class="instrument-panel">
-                    <div id="ukuleleFingering" class="display-screen">請點擊上方和弦查看烏克麗麗按法</div>
-                </div>
-
-                <!-- 🎻 小提琴面板 -->
-                <div id="panel-violin" class="instrument-panel">
-                    <div id="violinFingering" class="display-screen">請點擊上方和弦查看小提琴雙音指法</div>
-                </div>
-
-                <!-- 🎻 大提琴面板 -->
-                <div id="panel-cello" class="instrument-panel">
-                    <div id="celloFingering" class="display-screen">請點擊上方和弦查看大提琴低音與把位</div>
+                <div id="panel-string" style="display:none;">
+                    <div class="diagram-layout">
+                        <div class="svg-chart-wrap" id="fretboardSvgContainer"></div>
+                        <div class="guide-details" id="instrumentGuideText"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-label"><span class="step-badge">4</span> 自定義和弦進行積木區</div>
+            <div class="section-label"><span class="step-badge">4</span> 自定義和弦進行積木區（點擊標籤可刪除單個和弦）</div>
             <div class="custom-builder-box">
                 <div id="customSlots" class="custom-slots">
-                    <span class="empty-slot-text">請從上方點擊和弦加入組合...</span>
+                    <span class="empty-slot-text">請從上方點擊和弦加入組合，或按「🎲 隨機靈感搭配」...</span>
                 </div>
                 <div class="builder-actions">
                     <button class="action-btn btn-primary" onclick="playCustomProgression()">▶ 播放自定義組合</button>
+                    <button class="action-btn btn-random" onclick="generateRandomProgression()">🎲 隨機靈感搭配</button>
                     <button class="action-btn btn-secondary" onclick="clearCustomProgression()">🗑 清空重來</button>
                 </div>
             </div>
@@ -474,300 +591,734 @@
 
         <div class="section" style="margin-bottom: 0;">
             <div class="section-label"><span class="step-badge">⚡</span> 目前狀態</div>
-            <div id="currentProgression" class="preview-box">尚未選擇和弦</div>
+            <div id="currentProgression" class="preview-box">點擊任一和弦或推薦走向開始試聽</div>
         </div>
 
-        <div class="footer-note">💡 提示：點擊上方不同的樂器標籤，即可無縫切換檢視木吉他、電吉他、電 Bass、烏克麗麗、小提琴與大提琴的指法表。</div>
+        <div class="footer-note">
+            💡 說明：本工具使用 Web Audio API 物理撥弦（Karplus-Strong）、電吉他箱體過載濾波、鋼琴泛音加法合成與弓弦共振峰模型，讓 7 種樂器各自呈現真實音域與演奏聲響，並依標準定弦繪製正確指法圖表。
+        </div>
     </div>
 
     <script>
+        const noteToPc = {
+            "C": 0, "B#": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3,
+            "E": 4, "Fb": 4, "F": 5, "E#": 5, "F#": 6, "Gb": 6, "G": 7,
+            "G#": 8, "Ab": 8, "A": 9, "A#": 10, "Bb": 10, "B": 11, "Cb": 11
+        };
+
+        const sharpNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+        function parseChord(chordName) {
+            const match = chordName.match(/^([A-G][#b]?)(dim|m)?$/);
+            const root = match ? match[1] : "C";
+            const quality = match ? (match[2] || "maj") : "maj";
+            const rootPc = noteToPc[root] ?? 0;
+
+            let intervals = [0, 4, 7];
+            let qualityLabel = "大三和弦 (Major)";
+            if (quality === "m") {
+                intervals = [0, 3, 7];
+                qualityLabel = "小三和弦 (Minor)";
+            } else if (quality === "dim") {
+                intervals = [0, 3, 6];
+                qualityLabel = "減三和弦 (Diminished)";
+            }
+            const pcs = intervals.map(iv => (rootPc + iv) % 12);
+            return { chordName, root, rootPc, quality, qualityLabel, intervals, pcs };
+        }
+
+        function midiToFreq(midi) {
+            return 440 * Math.pow(2, (midi - 69) / 12);
+        }
+
         const chordData = {
-            "C": { name: "C 大調", chords: [
-                {name:"C",role:"I",notes:["C","E","G"], acoustic:"【木吉他】x32010\n• 3弦2品 (中指)\n• 2弦1品 (食指)\n• 第5、1弦根音與高音開放", electric:"【電吉他】x35553 (3品封閉)\n• 使用 Barre 封閉3品，厚實飽滿的流行搖滾音色", bass:"【電 Bass】3弦 3品 (C音)\n• 彈奏扎實的根音或八度音線條 (C - G)", ukulele:"【烏克麗麗】0003\n• 只需將1弦按在3品 (無名指)", violin:"【小提琴】雙音分解：G弦2品 + E弦開放音\n• 弓法：平穩長弓 (Legato)", cello:"【大提琴】C弦 3品 (C音) 或 A弦 3品\n• 弓法：分弓 (Detached)"},
-                {name:"Dm",role:"ii",notes:["D","F","A"], acoustic:"【木吉他】xx0231\n• 3弦2品、2弦3品、1弦1品", electric:"【電吉他】x57765 (5品封閉)", bass:"【電 Bass】4弦 5品 (A音) 或 3弦 5品 (D音)", ukulele:"【烏克麗麗】2210\n• 4弦2品、3弦2品、2弦1品", violin:"【小提琴】D弦開放 + A弦3品", cello:"【大提琴】D弦開放音與低音裝飾"},
-                {name:"Em",role:"iii",notes:["E","G","B"], acoustic:"【木吉他】022000\n• 5弦2品、4弦2品 (最常用民謠和弦)", electric:"【電吉他】022000 或 779987", bass:"【電 Bass】4弦 7品 (E音) 或 3弦 2品 (B音)", ukulele:"【烏克麗麗】0432\n• 3弦4品、2弦3品、1弦2品", violin:"【小提琴】E弦2品 + G弦開放", cello:"【大提琴】G弦2品 (A音) 或低音支撐"},
-                {name:"F",role:"IV",notes:["F","A","C"], acoustic:"【木吉他】133211\n• 1品大橫按，新手挑戰經典和弦", electric:"【電吉他】133211 (或 Power Chord 133xxx)", bass:"【電 Bass】3弦 8品 或 4弦 1品 (F音)", ukulele:"【烏克麗麗】2010\n• 4弦2品、2弦1品", violin:"【小提琴】D弦3品 + A弦3品", cello:"【大提琴】F音共鳴低音"},
-                {name:"G",role:"V",notes:["G","B","D"], acoustic:"【木吉他】320033\n• 6弦3品、5弦2品、1/2弦3品", electric:"【電吉他】355433 (3品封閉)", bass:"【電 Bass】3弦 10品 或 4弦 3品 (G音)", ukulele:"【烏克麗麗】0232\n• 3弦2品、2弦3品、1弦2品", violin:"【小提琴】G弦開放 + D弦0品", cello:"【大提琴】G弦開放強音"},
-                {name:"Am",role:"vi",notes:["A","C","E"], acoustic:"【木吉他】x02210\n• 4弦2品、3弦2品、2弦1品", electric:"【電吉他】577555 (5品封閉)", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2000\n• 4弦2品 (超簡單好按)", violin:"【小提琴】A弦開放 + E弦開放", cello:"【大提琴】A弦開放音或弦樂墊音"}
-            ], progressions: [["C","Am","F","G"],["C","G","Am","F"],["F","G","Em","Am"]] },
+            "C":  { name: "C 大調", chords: [["C","I",["C","E","G"]],["Dm","ii",["D","F","A"]],["Em","iii",["E","G","B"]],["F","IV",["F","A","C"]],["G","V",["G","B","D"]],["Am","vi",["A","C","E"]],["Bdim","vii°",["B","D","F"]]], progressions: [{chords:["C","Am","F","G"],desc:"經典卡農／抒情流行萬用進行"},{chords:["C","G","Am","F"],desc:"歐美流行四和弦 (Pop Punk / Anthem)"},{chords:["F","G","Em","Am"],desc:"華語抒情副歌經典走向 (4-5-3-6)"}] },
+            "G":  { name: "G 大調", chords: [["G","I",["G","B","D"]],["Am","ii",["A","C","E"]],["Bm","iii",["B","D","F#"]],["C","IV",["C","E","G"]],["D","V",["D","F#","A"]],["Em","vi",["E","G","B"]],["F#dim","vii°",["F#", "A", "C"]]], progressions: [{chords:["G","Em","C","D"],desc:"木吉他彈唱最順手進行"},{chords:["G","D","Em","C"],desc:"流行搖滾四和弦走向"},{chords:["C","D","Bm","Em"],desc:"日系／華語感性副歌走向"}] },
+            "D":  { name: "D 大調", chords: [["D","I",["D","F#","A"]],["Em","ii",["E","G","B"]],["F#m","iii",["F#","A","C#"]],["G","IV",["G","B","D"]],["A","V",["A","C#","E"]],["Bm","vi",["B","D","F#"]],["C#dim","vii°",["C#","E","G"]]], progressions: [{chords:["D","Bm","G","A"],desc:"溫暖民謠經典走向"},{chords:["D","A","Bm","G"],desc:"明亮流行進行"}] },
+            "A":  { name: "A 大調", chords: [["A","I",["A","C#","E"]],["Bm","ii",["B","D","F#"]],["C#m","iii",["C#","E","G#"]],["D","IV",["D","F#","A"]],["E","V",["E","G#","B"]],["F#m","vi",["F#","A","C#"]],["G#dim","vii°",["G#","B","D"]]], progressions: [{chords:["A","F#m","D","E"],desc:"經典流行進行"},{chords:["A","E","F#m","D"],desc:"輕快搖滾走向"}] },
+            "E":  { name: "E 大調", chords: [["E","I",["E","G#","B"]],["F#m","ii",["F#","A","C#"]],["G#m","iii",["G#","B","D#"]],["A","IV",["A","C#","E"]],["B","V",["B","D#","F#"]],["C#m","vi",["C#","E","G#"]],["D#dim","vii°",["D#","F#","A"]]], progressions: [{chords:["E","C#m","A","B"],desc:"吉他開放弦共鳴佳"},{chords:["E","B","C#m","A"],desc:"流行四和弦走向"}] },
+            "B":  { name: "B 大調", chords: [["B","I",["B","D#","F#"]],["C#m","ii",["C#","E","G#"]],["D#m","iii",["D#","F#","A#"]],["E","IV",["E","G#","B"]],["F#","V",["F#","A#","C#"]],["G#m","vi",["G#","B","D#"]],["A#dim","vii°",["A#","C#","E"]]], progressions: [{chords:["B","G#m","E","F#"],desc:"經典流行進行"},{chords:["B","F#","G#m","E"],desc:"流行四和弦走向"}] },
+            "F#": { name: "F# 大調", chords: [["F#","I",["F#","A#","C#"]],["G#m","ii",["G#","B","D#"]],["A#m","iii",["A#","C#","E#"]],["B","IV",["B","D#","F#"]],["C#","V",["C#","E#","G#"]],["D#m","vi",["D#","F#","A#"]],["E#dim","vii°",["E#","G#","B"]]], progressions: [{chords:["F#","D#m","B","C#"],desc:"經典流行進行"},{chords:["F#","C#","D#m","B"],desc:"流行四和弦走向"}] },
+            "Db": { name: "Db 大調", chords: [["Db","I",["Db","F","Ab"]],["Ebm","ii",["Eb","Gb","Bb"]],["Fm","iii",["F","Ab","C"]],["Gb","IV",["Gb","Bb","Db"]],["Ab","V",["Ab","C","Eb"]],["Bbm","vi",["Bb","Db","F"]],["Cdim","vii°",["C","Eb","Gb"]]], progressions: [{chords:["Db","Bbm","Gb","Ab"],desc:"R&B / 抒情鋼琴常用調性"},{chords:["Db","Ab","Bbm","Gb"],desc:"流行四和弦走向"}] },
+            "Ab": { name: "Ab 大調", chords: [["Ab","I",["Ab","C","Eb"]],["Bbm","ii",["Bb","Db","F"]],["Cm","iii",["C","Eb","G"]],["Db","IV",["Db","F","Ab"]],["Eb","V",["Eb","G","Bb"]],["Fm","vi",["F","Ab","C"]],["Gdim","vii°",["G","Bb","Db"]]], progressions: [{chords:["Ab","Fm","Db","Eb"],desc:"經典抒情進行"},{chords:["Ab","Eb","Fm","Db"],desc:"流行四和弦走向"}] },
+            "Eb": { name: "Eb 大調", chords: [["Eb","I",["Eb","G","Bb"]],["Fm","ii",["F","Ab","C"]],["Gm","iii",["G","Bb","D"]],["Ab","IV",["Ab","C","Eb"]],["Bb","V",["Bb","D","F"]],["Cm","vi",["C","Eb","G"]],["Ddim","vii°",["D","F","Ab"]]], progressions: [{chords:["Eb","Cm","Ab","Bb"],desc:"管樂與鋼琴常用調性"},{chords:["Eb","Bb","Cm","Ab"],desc:"流行四和弦走向"}] },
+            "Bb": { name: "Bb 大調", chords: [["Bb","I",["Bb","D","F"]],["Cm","ii",["C","Eb","G"]],["Dm","iii",["D","F","A"]],["Eb","IV",["Eb","G","Bb"]],["F","V",["F","A","C"]],["Gm","vi",["G","Bb","D"]],["Adim","vii°",["A","C","Eb"]]], progressions: [{chords:["Bb","Gm","Eb","F"],desc:"經典流行進行"},{chords:["Bb","F","Gm","Eb"],desc:"流行四和弦走向"}] },
+            "F":  { name: "F 大調", chords: [["F","I",["F","A","C"]],["Gm","ii",["G","Bb","D"]],["Am","iii",["A","C","E"]],["Bb","IV",["Bb","D","F"]],["C","V",["C","E","G"]],["Dm","vi",["D","F","A"]],["Edim","vii°",["E","G","Bb"]]], progressions: [{chords:["F","Dm","Bb","C"],desc:"經典流行進行"},{chords:["F","C","Dm","Bb"],desc:"流行四和弦走向"},{chords:["Bb","C","Am","Dm"],desc:"抒情副歌走向"}] },
 
-            "G": { name: "G 大調", chords: [
-                {name:"G",role:"I",notes:["G","B","D"], acoustic:"【木吉他】320033", electric:"【電吉他】355433", bass:"【電 Bass】4弦 3品 (G音)", ukulele:"【烏克麗麗】0232", violin:"【小提琴】G弦開+D弦0品", cello:"【大提琴】G弦低音"},
-                {name:"Am",role:"ii",notes:["A","C","E"], acoustic:"【木吉他】x02210", electric:"【電吉他】577555", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2000", violin:"【小提琴】A弦開+E弦開", cello:"【大提琴】A弦低音"},
-                {name:"Bm",role:"iii",notes:["B","D","F#"], acoustic:"【木吉他】x24432 (2品橫按)", electric:"【電吉他】x24432", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4222", violin:"【小提琴】高把位雙音", cello:"【大提琴】B音低音支援"},
-                {name:"C",role:"IV",notes:["C","E","G"], acoustic:"【木吉他】x32010", electric:"【電吉他】x35553", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0003", violin:"【小提琴】G弦2品+E弦開", cello:"【大提琴】C弦3品"},
-                {name:"D",role:"V",notes:["D","F#","A"], acoustic:"【木吉他】xx0232", electric:"【電吉他】x57775", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2220", violin:"【小提琴】D弦開+A弦開放", cello:"【大提琴】D弦開放音"},
-                {name:"Em",role:"vi",notes:["E","G","B"], acoustic:"【木吉他】022000", electric:"【電吉他】022000", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】0432", violin:"【小提琴】E弦2品", cello:"【大提琴】G弦2品"}
-            ], progressions: [["G","Em","C","D"],["G","D","Em","C"]] },
-
-            "D": { name: "D 大調", chords: [
-                {name:"D",role:"I",notes:["D","F#","A"], acoustic:"【木吉他】xx0232", electric:"【電吉他】x57775", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2220", violin:"【小提琴】D弦開+A弦開", cello:"【大提琴】D弦共鳴"},
-                {name:"Em",role:"ii",notes:["E","G","B"], acoustic:"【木吉他】022000", electric:"【電吉他】022000", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】0432", violin:"【小提琴】E弦2品", cello:"【大提琴】G弦2品"},
-                {name:"F#m",role:"iii",notes:["F#","A","C#"], acoustic:"【木吉他】244222 (2品橫按)", electric:"【電吉他】244222", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】2120", violin:"【小提琴】D弦4品", cello:"【大提琴】D弦4品"},
-                {name:"G",role:"IV",notes:["G","B","D"], acoustic:"【木吉他】320033", electric:"【電吉他】355433", bass:"【電 Bass】4弦 3品 (G音)", ukulele:"【烏克麗麗】0232", violin:"【小提琴】G弦開+D弦開", cello:"【大提琴】G弦開"},
-                {name:"A",role:"V",notes:["A","C#","E"], acoustic:"【木吉他】x02220", electric:"【電吉他】x02220", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2100", violin:"【小提琴】A弦開+E弦開", cello:"【大提琴】A弦開"},
-                {name:"Bm",role:"vi",notes:["B","D","F#"], acoustic:"【木吉他】x24432", electric:"【電吉他】x24432", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4222", violin:"【小提琴】高把位", cello:"【大提琴】低音支撐"}
-            ], progressions: [["D","Bm","G","A"]] },
-
-            "A": { name: "A 大調", chords: [
-                {name:"A",role:"I",notes:["A","C#","E"], acoustic:"【木吉他】x02220", electric:"【電吉他】x02220", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2100", violin:"【小提琴】A弦開", cello:"【大提琴】A弦開"},
-                {name:"Bm",role:"ii",notes:["B","D","F#"], acoustic:"【木吉他】x24432", electric:"【電吉他】x24432", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4222", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C#m",role:"iii",notes:["C#","E","G#"], acoustic:"【木吉他】x46654 (4品橫按)", electric:"【電吉他】x46654", bass:"【電 Bass】3弦 4品 (C#音)", ukulele:"【烏克麗麗】1104", violin:"【小提琴】高把位", cello:"【大提琴】高把位"},
-                {name:"D",role:"IV",notes:["D","F#","A"], acoustic:"【木吉他】xx0232", electric:"【電吉他】x57775", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2220", violin:"【小提琴】D弦開", cello:"【大提琴】D弦開"},
-                {name:"E",role:"V",notes:["E","G#","B"], acoustic:"【木吉他】022100", electric:"【電吉他】022100", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】1403", violin:"【小提琴】E弦開", cello:"【大提琴】低音"},
-                {name:"F#m",role:"vi",notes:["F#","A","C#"], acoustic:"【木吉他】244222", electric:"【電吉他】244222", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】2120", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["A","F#m","D","E"]] },
-
-            "E": { name: "E 大調", chords: [
-                {name:"E",role:"I",notes:["E","G#","B"], acoustic:"【木吉他】022100", electric:"【電吉他】022100", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】1403", violin:"【小提琴】E弦開", cello:"【大提琴】低音"},
-                {name:"F#m",role:"ii",notes:["F#","A","C#"], acoustic:"【木吉他】244222", electric:"【電吉他】244222", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】2120", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"G#m",role:"iii",notes:["G#","B","D#"], acoustic:"【木吉他】466444", electric:"【電吉他】466444", bass:"【電 Bass】3弦 6品 (G#音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】高把位", cello:"【大提琴】高把位"},
-                {name:"A",role:"IV",notes:["A","C#","E"], acoustic:"【木吉他】x02220", electric:"【電吉他】x02220", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2100", violin:"【小提琴】A弦開", cello:"【大提琴】A弦開"},
-                {name:"B",role:"V",notes:["B","D#","F#"], acoustic:"【木吉他】x24442", electric:"【電吉他】x24442", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C#m",role:"vi",notes:["C#","E","G#"], acoustic:"【木吉他】x46654", electric:"【電吉他】x46654", bass:"【電 Bass】3弦 4品 (C#音)", ukulele:"【烏克麗麗】1104", violin:"【小提琴】高把位", cello:"【大提琴】高把位"}
-            ], progressions: [["E","C#m","A","B"]] },
-
-            "B": { name: "B 大調", chords: [
-                {name:"B",role:"I",notes:["B","D#","F#"], acoustic:"【木吉他】x24442", electric:"【電吉他】x24442", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C#m",role:"ii",notes:["C#","E","G#"], acoustic:"【木吉他】x46654", electric:"【電吉他】x46654", bass:"【電 Bass】3弦 4品 (C#音)", ukulele:"【烏克麗麗】1104", violin:"【小提琴】高把位", cello:"【大提琴】高把位"},
-                {name:"D#m",role:"iii",notes:["D#","F#","A#"], acoustic:"【木吉他】x68876", electric:"【電吉他】x68876", bass:"【電 Bass】3弦 6品 (D#音)", ukulele:"【烏克麗麗】3321", violin:"【小提琴】高把位", cello:"【大提琴】高把位"},
-                {name:"E",role:"IV",notes:["E","G#","B"], acoustic:"【木吉他】022100", electric:"【電吉他】022100", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】1403", violin:"【小提琴】E弦開", cello:"【大提琴】低音"},
-                {name:"F#",role:"V",notes:["F#","A#","C#"], acoustic:"【木吉他】244322", electric:"【電吉他】244322", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"G#m",role:"vi",notes:["G#","B","D#"], acoustic:"【木吉他】466444", electric:"【電吉他】466444", bass:"【電 Bass】3弦 6品 (G#音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】高把位", cello:"【大提琴】高把位"}
-            ], progressions: [["B","G#m","E","F#"]] },
-
-            "F#": { name: "F# 大調", chords: [
-                {name:"F#",role:"I",notes:["F#","A#","C#"], acoustic:"【木吉他】244322", electric:"【電吉他】244322", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"G#m",role:"ii",notes:["G#","B","D#"], acoustic:"【木吉他】466444", electric:"【電吉他】466444", bass:"【電 Bass】3弦 6品 (G#音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】高把位", cello:"【大提琴】高把位"},
-                {name:"A#m",role:"iii",notes:["A#","C#","F"], acoustic:"【木吉他】x13321", electric:"【電吉他】x13321", bass:"【電 Bass】1弦 1品 (A#音)", ukulele:"【烏克麗麗】3111", violin:"【小提琴】高把位", cello:"【大提琴】高把位"},
-                {name:"B",role:"IV",notes:["B","D#","F#"], acoustic:"【木吉他】x24442", electric:"【電吉他】x24442", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C#",role:"V",notes:["C#","F","G#"], acoustic:"【木吉他】x46664", electric:"【電吉他】x46664", bass:"【電 Bass】3弦 4品 (C#音)", ukulele:"【烏克麗麗】1114", violin:"【小提琴】高把位", cello:"【大提琴】高把位"},
-                {name:"D#m",role:"vi",notes:["D#","F#","A#"], acoustic:"【木吉他】x68876", electric:"【電吉他】x68876", bass:"【電 Bass】3弦 6品 (D#音)", ukulele:"【烏克麗麗】3321", violin:"【小提琴】高把位", cello:"【大提琴】高把位"}
-            ], progressions: [["F#","D#m","B","C#"]] },
-
-            "Db": { name: "Db 大調", chords: [
-                {name:"Db",role:"I",notes:["Db","F","Ab"], acoustic:"【木吉他】x46664", electric:"【電吉他】x46664", bass:"【電 Bass】4弦 4品 (Db音)", ukulele:"【烏克麗麗】1114", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Ebm",role:"ii",notes:["Eb","Gb","Bb"], acoustic:"【木吉他】x68876", electric:"【電吉他】x68876", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3321", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Fm",role:"iii",notes:["F","Ab","C"], acoustic:"【木吉他】133111", electric:"【電吉他】133111", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】1033", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Gb",role:"IV",notes:["Gb","Bb","Db"], acoustic:"【木吉他】244322", electric:"【電吉他】244322", bass:"【電 Bass】4弦 2品 (Gb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Ab",role:"V",notes:["Ab","C","Eb"], acoustic:"【木吉他】466544", electric:"【電吉他】466544", bass:"【電 Bass】4弦 4品 (Ab音)", ukulele:"【烏克麗麗】5343", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Bbm",role:"vi",notes:["Bbm","Db","F"], acoustic:"【木吉他】x13321", electric:"【電吉他】x13321", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3111", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Db","Bbm","Gb","Ab"]] },
-
-            "Ab": { name: "Ab 大調", chords: [
-                {name:"Ab",role:"I",notes:["Ab","C","Eb"], acoustic:"【木吉他】466544", electric:"【電吉他】466544", bass:"【電 Bass】4弦 4品 (Ab音)", ukulele:"【烏克麗麗】5343", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Bbm",role:"ii",notes:["Bbm","Db","F"], acoustic:"【木吉他】x13321", electric:"【電吉他】x13321", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3111", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Cm",role:"iii",notes:["Cm","Eb","G"], acoustic:"【木吉他】x35543", electric:"【電吉他】x35543", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0333", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Db",role:"IV",notes:["Db","F","Ab"], acoustic:"【木吉他】x46664", electric:"【電吉他】x46664", bass:"【電 Bass】4弦 4品 (Db音)", ukulele:"【烏克麗麗】1114", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Eb",role:"V",notes:["Eb","G","Bb"], acoustic:"【木吉他】x68886", electric:"【電吉他】x68886", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3331", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Fm",role:"vi",notes:["Fm","Ab","C"], acoustic:"【木吉他】133111", electric:"【電吉他】133111", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】1033", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Ab","Fm","Db","Eb"]] },
-
-            "Eb": { name: "Eb 大調", chords: [
-                {name:"Eb",role:"I",notes:["Eb","G","Bb"], acoustic:"【木吉他】x68886", electric:"【電吉他】x68886", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3331", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Fm",role:"ii",notes:["F","Ab","C"], acoustic:"【木吉他】133111", electric:"【電吉他】133111", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】1033", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Gm",role:"iii",notes:["Gm","Bb","D"], acoustic:"【木吉他】355333", electric:"【電吉他】355333", bass:"【電 Bass】3弦 10品 (G音)", ukulele:"【烏克麗麗】0231", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Ab",role:"IV",notes:["Ab","C","Eb"], acoustic:"【木吉他】466544", electric:"【電吉他】466544", bass:"【電 Bass】4弦 4品 (Ab音)", ukulele:"【烏克麗麗】5343", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Bb",role:"V",notes:["Bb","D","F"], acoustic:"【木吉他】x13331", electric:"【電吉他】x13331", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Cm",role:"vi",notes:["Cm","Eb","G"], acoustic:"【木吉他】x35543", electric:"【電吉他】x35543", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0333", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Eb","Cm","Ab","Bb"]] },
-
-            "Bb": { name: "Bb 大調", chords: [
-                {name:"Bb",role:"I",notes:["Bb","D","F"], acoustic:"【木吉他】x13331", electric:"【電吉他】x13331", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Cm",role:"ii",notes:["Cm","Eb","G"], acoustic:"【木吉他】x35543", electric:"【電吉他】x35543", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0333", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Dm",role:"iii",notes:["Dm","F","A"], acoustic:"【木吉他】xx0231", electric:"【電吉他】xx0231", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2210", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Eb",role:"IV",notes:["Eb","G","Bb"], acoustic:"【木吉他】x68886", electric:"【電吉他】x68886", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3331", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"F",role:"V",notes:["F","A","C"], acoustic:"【木吉他】133211", electric:"【電吉他】133211", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】2010", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Gm",role:"vi",notes:["Gm","Bb","D"], acoustic:"【木吉他】355333", electric:"【電吉他】355333", bass:"【電 Bass】3弦 10品 (G音)", ukulele:"【烏克麗麗】0231", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Bb","Gm","Eb","F"]] },
-
-            "F": { name: "F 大調", chords: [
-                {name:"F",role:"I",notes:["F","A","C"], acoustic:"【木吉他】133211", electric:"【電吉他】133211", bass:"【電 Bass】4弦 1品 (F音)", ukulele:"【烏克麗麗】2010", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Gm",role:"ii",notes:["Gm","Bb","D"], acoustic:"【木吉他】355333", electric:"【電吉他】355333", bass:"【電 Bass】3弦 10品 (G音)", ukulele:"【烏克麗麗】0231", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Am",role:"iii",notes:["Am","C","E"], acoustic:"【木吉他】x02210", electric:"【電吉他】577555", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2000", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Bb",role:"IV",notes:["Bb","D","F"], acoustic:"【木吉他】x13331", electric:"【電吉他】x13331", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C",role:"V",notes:["C","E","G"], acoustic:"【木吉他】x32010", electric:"【電吉他】x35553", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0003", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Dm",role:"vi",notes:["D","F","A"], acoustic:"【木吉他】xx0231", electric:"【電吉他】x57765", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2210", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["F","Dm","Bb","C"],["F","C","Dm","Bb"],["Bb","C","Am","Dm"]] },
-
-            "Am": { name: "A 小調", chords: [
-                {name:"Am",role:"i",notes:["A","C","E"], acoustic:"【木吉他】x02210", electric:"【電吉他】577555", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2000", violin:"【小提琴】A弦開+E弦開", cello:"【大提琴】A弦開"},
-                {name:"C",role:"III",notes:["C","E","G"], acoustic:"【木吉他】x32010", electric:"【電吉他】x35553", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0003", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Dm",role:"iv",notes:["D","F","A"], acoustic:"【木吉他】xx0231", electric:"【電吉他】x57765", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2210", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Em",role:"v",notes:["E","G","B"], acoustic:"【木吉他】022000", electric:"【電吉他】022000", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】0432", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"F",role:"VI",notes:["F","A","C"], acoustic:"【木吉他】133211", electric:"【電吉他】133211", bass:"【電 Bass】4弦 1品 (F音)", ukulele:"【烏克麗麗】2010", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"G",role:"VII",notes:["G","B","D"], acoustic:"【木吉他】320033", electric:"【電吉他】355433", bass:"【電 Bass】4弦 3品 (G音)", ukulele:"【烏克麗麗】0232", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["Am","F","C","G"],["Am","Dm","G","C"]] },
-
-            "Em": { name: "E 小調", chords: [
-                {name:"Em",role:"i",notes:["E","G","B"], acoustic:"【木吉他】022000", electric:"【電吉他】022000", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】0432", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"G",role:"III",notes:["G","B","D"], acoustic:"【木吉他】320033", electric:"【電吉他】355433", bass:"【電 Bass】4弦 3品 (G音)", ukulele:"【烏克麗麗】0232", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Am",role:"iv",notes:["A","C","E"], acoustic:"【木吉他】x02210", electric:"【電吉他】577555", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2000", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Bm",role:"v",notes:["B","D","F#"], acoustic:"【木吉他】x24432", electric:"【電吉他】x24432", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4222", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"C",role:"VI",notes:["C","E","G"], acoustic:"【木吉他】x32010", electric:"【電吉他】x35553", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0003", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"D",role:"VII",notes:["D","F#","A"], acoustic:"【木吉他】xx0232", electric:"【電吉他】x57775", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2220", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["Em","C","G","D"]] },
-
-            "Bm": { name: "B 小調", chords: [
-                {name:"Bm",role:"i",notes:["B","D","F#"], acoustic:"【木吉他】x24432", electric:"【電吉他】x24432", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4222", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"D",role:"III",notes:["D","F#","A"], acoustic:"【木吉他】xx0232", electric:"【電吉他】x57775", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2220", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Em",role:"iv",notes:["E","G","B"], acoustic:"【木吉他】022000", electric:"【電吉他】022000", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】0432", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"F#m",role:"v",notes:["F#","A","C#"], acoustic:"【木吉他】244222", electric:"【電吉他】244222", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】2120", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"G",role:"VI",notes:["G","B","D"], acoustic:"【木吉他】320033", electric:"【電吉他】355433", bass:"【電 Bass】4弦 3品 (G音)", ukulele:"【烏克麗麗】0232", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"A",role:"VII",notes:["A","C#","E"], acoustic:"【木吉他】x02220", electric:"【電吉他】x02220", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2100", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["Bm","G","D","A"]] },
-
-            "F#m": { name: "F# 小調", chords: [
-                {name:"F#m",role:"i",notes:["F#","A","C#"], acoustic:"【木吉他】244222", electric:"【電吉他】244222", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】2120", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"A",role:"III",notes:["A","C#","E"], acoustic:"【木吉他】x02220", electric:"【電吉他】x02220", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2100", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Bm",role:"iv",notes:["B","D","F#"], acoustic:"【木吉他】x24432", electric:"【電吉他】x24432", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4222", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C#m",role:"v",notes:["C#","E","G#"], acoustic:"【木吉他】x46654", electric:"【電吉他】x46654", bass:"【電 Bass】3弦 4品 (C#音)", ukulele:"【烏克麗麗】1104", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"D",role:"VI",notes:["D","F#","A"], acoustic:"【木吉他】xx0232", electric:"【電吉他】x57775", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2220", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"E",role:"VII",notes:["E","G#","B"], acoustic:"【木吉他】022100", electric:"【電吉他】022100", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】1403", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["F#m","D","A","E"]] },
-
-            "C#m": { name: "C# 小調", chords: [
-                {name:"C#m",role:"i",notes:["C#","E","G#"], acoustic:"【木吉他】x46654", electric:"【電吉他】x46654", bass:"【電 Bass】3弦 4品 (C#音)", ukulele:"【烏克麗麗】1104", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"E",role:"III",notes:["E","G#","B"], acoustic:"【木吉他】022100", electric:"【電吉他】022100", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】1403", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"F#m",role:"iv",notes:["F#","A","C#"], acoustic:"【木吉他】244222", electric:"【電吉他】244222", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】2120", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"G#m",role:"v",notes:["G#","B","D#"], acoustic:"【木吉他】466444", electric:"【電吉他】466444", bass:"【電 Bass】3弦 6品 (G#音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"A",role:"VI",notes:["A","C#","E"], acoustic:"【木吉他】x02220", electric:"【電吉他】x02220", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2100", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"B",role:"VII",notes:["B","D#","F#"], acoustic:"【木吉他】x24442", electric:"【電吉他】x24442", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["C#m","A","E","B"]] },
-
-            "G#m": { name: "G# 小調", chords: [
-                {name:"G#m",role:"i",notes:["G#","B","D#"], acoustic:"【木吉他】466444", electric:"【電吉他】466444", bass:"【電 Bass】3弦 6品 (G#音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"B",role:"III",notes:["B","D#","F#"], acoustic:"【木吉他】x24442", electric:"【電吉他】x24442", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C#m",role:"iv",notes:["C#","E","G#"], acoustic:"【木吉他】x46654", electric:"【電吉他】x46654", bass:"【電 Bass】3弦 4品 (C#音)", ukulele:"【烏克麗麗】1104", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"D#m",role:"v",notes:["D#","F#","A#"], acoustic:"【木吉他】x68876", electric:"【電吉他】x68876", bass:"【電 Bass】3弦 6品 (D#音)", ukulele:"【烏克麗麗】3321", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"E",role:"VI",notes:["E","G#","B"], acoustic:"【木吉他】022100", electric:"【電吉他】022100", bass:"【電 Bass】4弦 7品 (E音)", ukulele:"【烏克麗麗】1403", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"F#",role:"VII",notes:["F#","A#","C#"], acoustic:"【木吉他】244322", electric:"【電吉他】244322", bass:"【電 Bass】3弦 4品 (F#音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["G#m","E","B","F#"]] },
-
-            "Ebm": { name: "Eb 小調", chords: [
-                {name:"Ebm",role:"i",notes:["Eb","Gb","Bb"], acoustic:"【木吉他】x68876", electric:"【電吉他】x68876", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3321", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Gb",role:"III",notes:["Gb","Bb","Db"], acoustic:"【木吉他】244322", electric:"【電吉他】244322", bass:"【電 Bass】4弦 2品 (Gb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Abm",role:"iv",notes:["Ab","B","Eb"], acoustic:"【木吉他】466444", electric:"【電吉他】466444", bass:"【電 Bass】4弦 4品 (Ab音)", ukulele:"【烏克麗麗】1342", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Bbm",role:"v",notes:["Bbm","Db","F"], acoustic:"【木吉他】x13321", electric:"【電吉他】x13321", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3111", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"B",role:"VI",notes:["B","D#","F#"], acoustic:"【木吉他】x24442", electric:"【電吉他】x24442", bass:"【電 Bass】3弦 2品 (B音)", ukulele:"【烏克麗麗】4322", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Db",role:"VII",notes:["Db","F","Ab"], acoustic:"【木吉他】x46664", electric:"【電吉他】x46664", bass:"【電 Bass】4弦 4品 (Db音)", ukulele:"【烏克麗麗】1114", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Ebm","B","Gb","Db"]] },
-
-            "Bbm": { name: "Bbm 小調", chords: [
-                {name:"Bbm",role:"i",notes:["Bbm","Db","F"], acoustic:"【木吉他】x13321", electric:"【電吉他】x13321", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3111", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Db",role:"III",notes:["Db","F","Ab"], acoustic:"【木吉他】x46664", electric:"【電吉他】x46664", bass:"【電 Bass】4弦 4品 (Db音)", ukulele:"【烏克麗麗】1114", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Ebm",role:"iv",notes:["Eb","Gb","Bb"], acoustic:"【木吉他】x68876", electric:"【電吉他】x68876", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3321", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Fm",role:"v",notes:["F","Ab","C"], acoustic:"【木吉他】133111", electric:"【電吉他】133111", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】1033", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Gb",role:"VI",notes:["Gb","Bb","Db"], acoustic:"【木吉他】244322", electric:"【電吉他】244322", bass:"【電 Bass】4弦 2品 (Gb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Ab",role:"VII",notes:["Ab","C","Eb"], acoustic:"【木吉他】466544", electric:"【電吉他】466544", bass:"【電 Bass】4弦 4品 (Ab音)", ukulele:"【烏克麗麗】5343", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Bbm","Gb","Db","Ab"]] },
-
-            "Fm": { name: "F 小調", chords: [
-                {name:"Fm",role:"i",notes:["F","Ab","C"], acoustic:"【木吉他】133111", electric:"【電吉他】133111", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】1033", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Ab",role:"III",notes:["Ab","C","Eb"], acoustic:"【木吉他】466544", electric:"【電吉他】466544", bass:"【電 Bass】4弦 4品 (Ab音)", ukulele:"【烏克麗麗】5343", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Bbm",role:"iv",notes:["Bbm","Db","F"], acoustic:"【木吉他】x13321", electric:"【電吉他】x13321", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3111", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Cm",role:"v",notes:["Cm","Eb","G"], acoustic:"【木吉他】x35543", electric:"【電吉他】x35543", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0333", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Db",role:"VI",notes:["Db","F","Ab"], acoustic:"【木吉他】x46664", electric:"【電吉他】x46664", bass:"【電 Bass】4弦 4品 (Db音)", ukulele:"【烏克麗麗】1114", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Eb",role:"VII",notes:["Eb","G","Bb"], acoustic:"【木吉他】x68886", electric:"【電吉他】x68886", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3331", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Fm","Db","Ab","Eb"]] },
-
-            "Cm": { name: "C 小調", chords: [
-                {name:"Cm",role:"i",notes:["Cm","Eb","G"], acoustic:"【木吉他】x35543", electric:"【電吉他】x35543", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0333", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Eb",role:"III",notes:["Eb","G","Bb"], acoustic:"【木吉他】x68886", electric:"【電吉他】x68886", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3331", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Fm",role:"iv",notes:["F","Ab","C"], acoustic:"【木吉他】133111", electric:"【電吉他】133111", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】1033", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Gm",role:"v",notes:["Gm","Bb","D"], acoustic:"【木吉他】355333", electric:"【電吉他】355333", bass:"【電 Bass】3弦 10品 (G音)", ukulele:"【烏克麗麗】0231", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Ab",role:"VI",notes:["Ab","C","Eb"], acoustic:"【木吉他】466544", electric:"【電吉他】466544", bass:"【電 Bass】4弦 4品 (Ab音)", ukulele:"【烏克麗麗】5343", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Bb",role:"VII",notes:["Bb","D","F"], acoustic:"【木吉他】x13331", electric:"【電吉他】x13331", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["Cm","Ab","Eb","Bb"]] },
-
-            "Gm": { name: "G 小調", chords: [
-                {name:"Gm",role:"i",notes:["Gm","Bb","D"], acoustic:"【木吉他】355333", electric:"【電吉他】355333", bass:"【電 Bass】3弦 10品 (G音)", ukulele:"【烏克麗麗】0231", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Bb",role:"III",notes:["Bb","D","F"], acoustic:"【木吉他】x13331", electric:"【電吉他】x13331", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Cm",role:"iv",notes:["Cm","Eb","G"], acoustic:"【木吉他】x35543", electric:"【電吉他】x35543", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0333", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Dm",role:"v",notes:["Dm","F","A"], acoustic:"【木吉他】xx0231", electric:"【電吉他】xx0231", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2210", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Eb",role:"VI",notes:["Eb","G","Bb"], acoustic:"【木吉他】x68886", electric:"【電吉他】x68886", bass:"【電 Bass】4弦 6品 (Eb音)", ukulele:"【烏克麗麗】3331", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"F",role:"VII",notes:["F","A","C"], acoustic:"【木吉他】133211", electric:"【電吉他】133211", bass:"【電 Bass】4弦 8品 (F音)", ukulele:"【烏克麗麗】2010", violin:"【小提琴】雙音", cello:"【大提琴】低音"}
-            ], progressions: [["Gm","Eb","Bb","F"]] },
-
-            "Dm": { name: "D 小調", chords: [
-                {name:"Dm",role:"i",notes:["Dm","F","A"], acoustic:"【木吉他】xx0231", electric:"【電吉他】x57765", bass:"【電 Bass】3弦 5品 (D音)", ukulele:"【烏克麗麗】2210", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"F",role:"III",notes:["F","A","C"], acoustic:"【木吉他】133211", electric:"【電吉他】133211", bass:"【電 Bass】4弦 1品 (F音)", ukulele:"【烏克麗麗】2010", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Gm",role:"iv",notes:["Gm","Bb","D"], acoustic:"【木吉他】355333", electric:"【電吉他】355333", bass:"【電 Bass】3弦 10品 (G音)", ukulele:"【烏克麗麗】0231", violin:"【小提琴】高把位", cello:"【大提琴】低音"},
-                {name:"Am",role:"v",notes:["Am","C","E"], acoustic:"【木吉他】x02210", electric:"【電吉他】577555", bass:"【電 Bass】4弦 5品 (A音)", ukulele:"【烏克麗麗】2000", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"Bb",role:"VI",notes:["Bb","D","F"], acoustic:"【木吉他】x13331", electric:"【電吉他】x13331", bass:"【電 Bass】4弦 1品 (Bb音)", ukulele:"【烏克麗麗】3211", violin:"【小提琴】雙音", cello:"【大提琴】低音"},
-                {name:"C",role:"VII",notes:["C","E","G"], acoustic:"【木吉他】x32010", electric:"【電吉他】x35553", bass:"【電 Bass】3弦 3品 (C音)", ukulele:"【烏克麗麗】0003", violin:"【小提琴】高把位", cello:"【大提琴】低音"}
-            ], progressions: [["Dm","Bb","F","C"],["Dm","Gm","C","F"]] }
+            "Am":  { name: "A 自然小調", chords: [["Am","i",["A","C","E"]],["Bdim","ii°",["B","D","F"]],["C","III",["C","E","G"]],["Dm","iv",["D","F","A"]],["Em","v",["E","G","B"]],["F","VI",["F","A","C"]],["G","VII",["G","B","D"]]], progressions: [{chords:["Am","F","C","G"],desc:"小調史詩／流行通用進行"},{chords:["Am","Dm","G","C"],desc:"自然小調順階進行"},{chords:["F","G","Em","Am"],desc:"感性小調副歌走向"}] },
+            "Em":  { name: "E 自然小調", chords: [["Em","i",["E","G","B"]],["F#dim","ii°",["F#","A","C"]],["G","III",["G","B","D"]],["Am","iv",["A","C","E"]],["Bm","v",["B","D","F#"]],["C","VI",["C","E","G"]],["D","VII",["D","F#","A"]]], progressions: [{chords:["Em","C","G","D"],desc:"小調流行通用進行"},{chords:["Em","Am","D","G"],desc:"自然小調順階進行"}] },
+            "Bm":  { name: "B 自然小調", chords: [["Bm","i",["B","D","F#"]],["C#dim","ii°",["C#","E","G"]],["D","III",["D","F#","A"]],["Em","iv",["E","G","B"]],["F#m","v",["F#","A","C#"]],["G","VI",["G","B","D"]],["A","VII",["A","C#","E"]]], progressions: [{chords:["Bm","G","D","A"],desc:"小調流行通用進行"},{chords:["Bm","Em","A","D"],desc:"自然小調順階進行"}] },
+            "F#m": { name: "F# 自然小調", chords: [["F#m","i",["F#","A","C#"]],["G#dim","ii°",["G#","B","D"]],["A","III",["A","C#","E"]],["Bm","iv",["B","D","F#"]],["C#m","v",["C#","E","G#"]],["D","VI",["D","F#","A"]],["E","VII",["E","G#","B"]]], progressions: [{chords:["F#m","D","A","E"],desc:"小調流行通用進行"},{chords:["F#m","Bm","E","A"],desc:"自然小調順階進行"}] },
+            "C#m": { name: "C# 自然小調", chords: [["C#m","i",["C#","E","G#"]],["D#dim","ii°",["D#","F#","A"]],["E","III",["E","G#","B"]],["F#m","iv",["F#","A","C#"]],["G#m","v",["G#","B","D#"]],["A","VI",["A","C#","E"]],["B","VII",["B","D#","F#"]]], progressions: [{chords:["C#m","A","E","B"],desc:"小調流行通用進行"},{chords:["C#m","F#m","B","E"],desc:"自然小調順階進行"}] },
+            "G#m": { name: "G# 自然小調", chords: [["G#m","i",["G#","B","D#"]],["A#dim","ii°",["A#","C#","E"]],["B","III",["B","D#","F#"]],["C#m","iv",["C#","E","G#"]],["D#m","v",["D#","F#","A#"]],["E","VI",["E","G#","B"]],["F#","VII",["F#","A#","C#"]]], progressions: [{chords:["G#m","E","B","F#"],desc:"小調流行通用進行"},{chords:["G#m","C#m","F#","B"],desc:"自然小調順階進行"}] },
+            "Ebm": { name: "Eb 自然小調", chords: [["Ebm","i",["Eb","Gb","Bb"]],["Fdim","ii°",["F","Ab","Cb"]],["Gb","III",["Gb","Bb","Db"]],["Abm","iv",["Ab","Cb","Eb"]],["Bbm","v",["Bb","Db","F"]],["Cb","VI",["Cb","Eb","Gb"]],["Db","VII",["Db","F","Ab"]]], progressions: [{chords:["Ebm","Cb","Gb","Db"],desc:"小調流行通用進行"},{chords:["Ebm","Abm","Db","Gb"],desc:"自然小調順階進行"}] },
+            "Bbm": { name: "Bb 自然小調", chords: [["Bbm","i",["Bb","Db","F"]],["Cdim","ii°",["C","Eb","Gb"]],["Db","III",["Db","F","Ab"]],["Ebm","iv",["Eb","Gb","Bb"]],["Fm","v",["F","Ab","C"]],["Gb","VI",["Gb","Bb","Db"]],["Ab","VII",["Ab","C","Eb"]]], progressions: [{chords:["Bbm","Gb","Db","Ab"],desc:"小調流行通用進行"},{chords:["Bbm","Ebm","Ab","Db"],desc:"自然小調順階進行"}] },
+            "Fm":  { name: "F 自然小調", chords: [["Fm","i",["F","Ab","C"]],["Gdim","ii°",["G","Bb","Db"]],["Ab","III",["Ab","C","Eb"]],["Bbm","iv",["Bb","Db","F"]],["Cm","v",["C","Eb","G"]],["Db","VI",["Db","F","Ab"]],["Eb","VII",["Eb","G","Bb"]]], progressions: [{chords:["Fm","Db","Ab","Eb"],desc:"小調流行通用進行"},{chords:["Fm","Bbm","Eb","Ab"],desc:"自然小調順階進行"}] },
+            "Cm":  { name: "C 自然小調", chords: [["Cm","i",["C","Eb","G"]],["Ddim","ii°",["D","F","Ab"]],["Eb","III",["Eb","G","Bb"]],["Fm","iv",["F","Ab","C"]],["Gm","v",["G","Bb","D"]],["Ab","VI",["Ab","C","Eb"]],["Bb","VII",["Bb","D","F"]]], progressions: [{chords:["Cm","Ab","Eb","Bb"],desc:"小調流行通用進行"},{chords:["Cm","Fm","Bb","Eb"],desc:"自然小調順階進行"}] },
+            "Gm":  { name: "G 自然小調", chords: [["Gm","i",["G","Bb","D"]],["Adim","ii°",["A","C","Eb"]],["Bb","III",["Bb","D","F"]],["Cm","iv",["C","Eb","G"]],["Dm","v",["D","F","A"]],["Eb","VI",["Eb","G","Bb"]],["F","VII",["F","A","C"]]], progressions: [{chords:["Gm","Eb","Bb","F"],desc:"小調流行通用進行"},{chords:["Gm","Cm","F","Bb"],desc:"自然小調順階進行"}] },
+            "Dm":  { name: "D 自然小調", chords: [["Dm","i",["D","F","A"]],["Edim","ii°",["E","G","Bb"]],["F","III",["F","A","C"]],["Gm","iv",["G","Bb","D"]],["Am","v",["A","C","E"]],["Bb","VI",["Bb","D","F"]],["C","VII",["C","E","G"]]], progressions: [{chords:["Dm","Bb","F","C"],desc:"小調流行通用進行"},{chords:["Dm","Gm","C","F"],desc:"自然小調順階進行"}] }
         };
 
-        const baseFreqs = {
-            "C":261.63, "C#":277.18, "Db":277.18, "D":293.66, "D#":311.13, "Eb":311.13,
-            "E":329.63, "F":349.23, "F#":369.99, "Gb":369.99, "G":392.00, "G#":415.30,
-            "Ab":415.30, "A":440.00, "A#":466.16, "Bb":466.16, "B":493.88
+        const guitarShapes = {
+            "C":    { frets: [-1, 3, 2, 0, 1, 0], baseFret: 1, tip: "無名指按5弦3品(C)、中指按4弦2品(E)、食指按2弦1品(C)，第6弦不彈(X)。" },
+            "Cm":   { frets: [-1, 3, 5, 5, 4, 3], baseFret: 3, tip: "食指第3品橫按(1~5弦)，無名指4弦5品、小指3弦5品、中指2弦4品。" },
+            "Cdim": { frets: [-1, 3, 4, 2, 4, -1], baseFret: 1, tip: "按住5弦3品(C)、4弦4品(Gb)、3弦2品(A/Eb對稱減音)、2弦4品(Eb)。" },
+            "C#m":  { frets: [-1, 4, 6, 6, 5, 4], baseFret: 4, tip: "食指第4品橫按(1~5弦)，無名指4弦6品、小指3弦6品、中指2弦5品。" },
+            "C#dim":{ frets: [-1, 4, 5, 3, 5, -1], baseFret: 3, tip: "5弦4品(C#)、4弦5品(G)、3弦3品(Bb)、2弦5品(E)。" },
+            "Db":   { frets: [-1, 4, 6, 6, 6, 4], baseFret: 4, tip: "食指第4品橫按(1~5弦)，無名指小橫按4、3、2弦第6品。" },
+            "D":    { frets: [-1, -1, 0, 2, 3, 2], baseFret: 1, tip: "第4弦開放(D)，食指3弦2品(A)、無名指2弦3品(D)、中指1弦2品(F#)。" },
+            "Dm":   { frets: [-1, -1, 0, 2, 3, 1], baseFret: 1, tip: "第4弦開放(D)，中指3弦2品(A)、無名指2弦3品(D)、食指1弦1品(F)。" },
+            "Ddim": { frets: [-1, -1, 0, 1, 3, 1], baseFret: 1, tip: "第4弦開放(D)，食指橫按3~1弦第1品，無名指按2弦3品(D)。" },
+            "D#m":  { frets: [-1, 6, 8, 8, 7, 6], baseFret: 6, tip: "食指第6品橫按(1~5弦)，無名指4弦8品、小指3弦8品、中指2弦7品。" },
+            "D#dim":{ frets: [-1, -1, 1, 2, 4, 2], baseFret: 1, tip: "4弦1品(D#)、3弦2品(A)、2弦4品(D#)、1弦2品(F#)。" },
+            "Eb":   { frets: [-1, 6, 8, 8, 8, 6], baseFret: 6, tip: "食指第6品橫按(1~5弦)，無名指按4、3、2弦第8品。" },
+            "Ebm":  { frets: [-1, 6, 8, 8, 7, 6], baseFret: 6, tip: "食指第6品橫按(1~5弦)，構成 Eb - Gb - Bb 小三和弦。" },
+            "E":    { frets: [0, 2, 2, 1, 0, 0],  baseFret: 1, tip: "中指5弦2品(B)、無名指4弦2品(E)、食指3弦1品(G#)，其餘空弦全刷。" },
+            "Em":   { frets: [0, 2, 2, 0, 0, 0],  baseFret: 1, tip: "中指5弦2品(B)、無名指4弦2品(E)，六條弦全刷，新手最易上手。" },
+            "Edim": { frets: [-1, -1, 2, 3, 5, 3], baseFret: 2, tip: "4弦2品(E)、3弦3品(Bb)、2弦5品(E)、1弦3品(G)。" },
+            "E#dim":{ frets: [-1, -1, 3, 4, 6, 4], baseFret: 3, tip: "4弦3品(F/E#)、3弦4品(B)、2弦6品(F)、1弦4品(G#)。" },
+            "F":    { frets: [1, 3, 3, 2, 1, 1],  baseFret: 1, tip: "食指第1品大橫按，無名指5弦3品、小指4弦3品、中指3弦2品。" },
+            "Fm":   { frets: [1, 3, 3, 1, 1, 1],  baseFret: 1, tip: "食指第1品大橫按，無名指5弦3品、小指4弦3品。" },
+            "Fdim": { frets: [1, 2, 3, 1, -1, -1], baseFret: 1, tip: "低把位減三和弦：6弦1品(F)、5弦2品(B/Cb)、4弦3品(F)、3弦1品(Ab)。" },
+            "F#":   { frets: [2, 4, 4, 3, 2, 2],  baseFret: 2, tip: "食指第2品大橫按，無名指5弦4品、小指4弦4品、中指3弦3品。" },
+            "F#m":  { frets: [2, 4, 4, 2, 2, 2],  baseFret: 2, tip: "食指第2品大橫按，無名指5弦4品、小指4弦4品。" },
+            "F#dim":{ frets: [2, 3, 4, 2, -1, -1], baseFret: 2, tip: "6弦2品(F#)、5弦3品(C)、4弦4品(F#)、3弦2品(A)。" },
+            "Gb":   { frets: [2, 4, 4, 3, 2, 2],  baseFret: 2, tip: "食指第2品大橫按(同 F# 指型)，構成 Gb - Bb - Db。" },
+            "G":    { frets: [3, 2, 0, 0, 0, 3],  baseFret: 1, tip: "中指6弦3品(G)、食指5弦2品(B)、無名指1弦3品(G)，中間三弦開放。" },
+            "Gm":   { frets: [3, 5, 5, 3, 3, 3],  baseFret: 3, tip: "食指第3品大橫按，無名指5弦5品、小指4弦5品。" },
+            "Gdim": { frets: [3, 4, 5, 3, -1, -1], baseFret: 3, tip: "6弦3品(G)、5弦4品(Db)、4弦5品(G)、3弦3品(Bb)。" },
+            "G#m":  { frets: [4, 6, 6, 4, 4, 4],  baseFret: 4, tip: "食指第4品大橫按，無名指5弦6品、小指4弦6品。" },
+            "G#dim":{ frets: [4, 5, 6, 4, -1, -1], baseFret: 4, tip: "6弦4品(G#)、5弦5品(D)、4弦6品(G#)、3弦4品(B)。" },
+            "Ab":   { frets: [4, 6, 6, 5, 4, 4],  baseFret: 4, tip: "食指第4品大橫按，無名指5弦6品、小指4弦6品、中指3弦5品。" },
+            "Abm":  { frets: [4, 6, 6, 4, 4, 4],  baseFret: 4, tip: "食指第4品大橫按(同 G#m 指型)，構成 Ab - Cb - Eb。" },
+            "A":    { frets: [-1, 0, 2, 2, 2, 0], baseFret: 1, tip: "第5弦開放(A)，食、中、無名指分別按4、3、2弦第2品，第6弦不彈。" },
+            "Am":   { frets: [-1, 0, 2, 2, 1, 0], baseFret: 1, tip: "第5弦開放(A)，中指4弦2品、無名指3弦2品、食指2弦1品。" },
+            "Adim": { frets: [-1, 0, 1, 2, 1, -1], baseFret: 1, tip: "5弦開放(A)、4弦1品(Eb)、3弦2品(A)、2弦1品(C)。" },
+            "A#m":  { frets: [-1, 1, 3, 3, 2, 1], baseFret: 1, tip: "食指第1品橫按(1~5弦)，無名指4弦3品、小指3弦3品、中指2弦2品。" },
+            "A#dim":{ frets: [-1, 1, 2, 0, 2, -1], baseFret: 1, tip: "5弦1品(A#)、4弦2品(E)、3弦開放(G)、2弦2品(C#)。" },
+            "Bb":   { frets: [-1, 1, 3, 3, 3, 1], baseFret: 1, tip: "食指第1品橫按(1~5弦)，無名指小橫按4、3、2弦第3品。" },
+            "Bbm":  { frets: [-1, 1, 3, 3, 2, 1], baseFret: 1, tip: "食指第1品橫按(1~5弦)，無名指4弦3品、小指3弦3品、中指2弦2品。" },
+            "B":    { frets: [-1, 2, 4, 4, 4, 2], baseFret: 2, tip: "食指第2品橫按(1~5弦)，無名指小橫按4、3、2弦第4品。" },
+            "Bm":   { frets: [-1, 2, 4, 4, 3, 2], baseFret: 2, tip: "食指第2品橫按(1~5弦)，無名指4弦4品、小指3弦4品、中指2弦3品。" },
+            "Bdim": { frets: [-1, 2, 3, 4, 3, -1], baseFret: 1, tip: "食指5弦2品(B)、中指4弦3品(F)、小指3弦4品(B)、無名指2弦3品(D)。" },
+            "Cb":   { frets: [-1, 2, 4, 4, 4, 2], baseFret: 2, tip: "食指第2品橫按(同 B 大三和弦指型)，構成 Cb - Eb - Gb。" }
         };
 
-        let userCustomProgression = [];
+        const ukuleleShapes = {
+            "C":    { frets: [0, 0, 0, 3], baseFret: 1, tip: "無名指按第1弦3品(C)，其餘三弦全開放。" },
+            "Cm":   { frets: [0, 3, 3, 3], baseFret: 1, tip: "食指小橫按3、2、1弦第3品，第4弦開放(G)。" },
+            "Cdim": { frets: [2, 3, 2, 3], baseFret: 1, tip: "食指4弦2品、無名指3弦3品、中指2弦2品、小指1弦3品。" },
+            "C#m":  { frets: [1, 1, 0, 4], baseFret: 1, tip: "4弦1品(G#)、3弦1品(C#)、2弦開放(E)、1弦4品(C#)。" },
+            "C#dim":{ frets: [0, 1, 0, 1], baseFret: 1, tip: "4弦開放(G)、3弦1品(C#)、2弦開放(E)、1弦1品(Bb)。" },
+            "Db":   { frets: [1, 1, 1, 4], baseFret: 1, tip: "食指橫按第1品，小指按第1弦4品(Db)。" },
+            "D":    { frets: [2, 2, 2, 0], baseFret: 1, tip: "食、中、無名指按4、3、2弦第2品，第1弦開放(A)。" },
+            "Dm":   { frets: [2, 2, 1, 0], baseFret: 1, tip: "中指4弦2品(A)、無名指3弦2品(D)、食指2弦1品(F)、1弦開放(A)。" },
+            "Ddim": { frets: [1, 2, 1, 2], baseFret: 1, tip: "食指4弦1品、無名指3弦2品、中指2弦1品、小指1弦2品。" },
+            "D#m":  { frets: [3, 3, 2, 1], baseFret: 1, tip: "無名指4弦3品、小指3弦3品、中指2弦2品、食指1弦1品。" },
+            "D#dim":{ frets: [2, 3, 2, 0], baseFret: 1, tip: "4弦2品(A)、3弦3品(D#)、2弦2品(F#)、1弦開放(A)。" },
+            "Eb":   { frets: [0, 3, 3, 1], baseFret: 1, tip: "4弦開放(G)、中指3弦3品(Eb)、無名指2弦3品(G)、食指1弦1品(Bb)。" },
+            "Ebm":  { frets: [3, 3, 2, 1], baseFret: 1, tip: "無名指4弦3品、小指3弦3品、中指2弦2品、食指1弦1品。" },
+            "E":    { frets: [1, 4, 0, 2], baseFret: 1, tip: "食指4弦1品(G#)、小指3弦4品(E)、2弦開放(E)、中指1弦2品(B)。" },
+            "Em":   { frets: [0, 4, 3, 2], baseFret: 1, tip: "4弦開放(G)、無名指3弦4品(E)、中指2弦3品(G)、食指1弦2品(B)。" },
+            "Edim": { frets: [0, 1, 0, 1], baseFret: 1, tip: "4弦開放(G)、3弦1品(Db/C#)、2弦開放(E)、1弦1品(Bb)。" },
+            "E#dim":{ frets: [1, 2, 1, 2], baseFret: 1, tip: "4弦1品(G#)、3弦2品(D)、2弦1品(F)、1弦2品(B)。" },
+            "F":    { frets: [2, 0, 1, 0], baseFret: 1, tip: "中指4弦2品(A)、3弦開放(C)、食指2弦1品(F)、1弦開放(A)。" },
+            "Fm":   { frets: [1, 0, 1, 3], baseFret: 1, tip: "食指4弦1品(Ab)、3弦開放(C)、中指2弦1品(F)、小指1弦3品(C)。" },
+            "Fdim": { frets: [1, 2, 1, 2], baseFret: 1, tip: "食指4弦1品(Ab)、無名指3弦2品(D)、中指2弦1品(F)、小指1弦2品(B)。" },
+            "F#":   { frets: [3, 1, 2, 1], baseFret: 1, tip: "食指橫按1品，中指2弦2品(F#)、無名指4弦3品(A#)。" },
+            "F#m":  { frets: [2, 1, 2, 0], baseFret: 1, tip: "中指4弦2品(A)、食指3弦1品(C#)、無名指2弦2品(F#)、1弦開放(A)。" },
+            "F#dim":{ frets: [2, 0, 2, 0], baseFret: 1, tip: "4弦2品(A)、3弦開放(C)、2弦2品(F#)、1弦開放(A)。" },
+            "Gb":   { frets: [3, 1, 2, 1], baseFret: 1, tip: "食指橫按1品(同 F# 指型)，構成 Gb - Bb - Db。" },
+            "G":    { frets: [0, 2, 3, 2], baseFret: 1, tip: "4弦開放(G)、食指3弦2品(D)、無名指2弦3品(G)、中指1弦2品(B)。" },
+            "Gm":   { frets: [0, 2, 3, 1], baseFret: 1, tip: "4弦開放(G)、中指3弦2品(D)、無名指2弦3品(G)、食指1弦1品(Bb)。" },
+            "Gdim": { frets: [0, 1, 3, 1], baseFret: 1, tip: "4弦開放(G)、食指3弦1品(Db)、無名指2弦3品(G)、中指1弦1品(Bb)。" },
+            "G#m":  { frets: [1, 3, 4, 2], baseFret: 1, tip: "食指4弦1品(G#)、無名指3弦3品(D#)、小指2弦4品(G#)、中指1弦2品(B)。" },
+            "G#dim":{ frets: [1, 2, 4, 2], baseFret: 1, tip: "4弦1品(G#)、中指3弦2品(D)、小指2弦4品(G#)、無名指1弦2品(B)。" },
+            "Ab":   { frets: [5, 3, 4, 3], baseFret: 3, tip: "食指橫按第3品，中指2弦4品(Ab)、無名指4弦5品(C)。" },
+            "Abm":  { frets: [1, 3, 4, 2], baseFret: 1, tip: "同 G#m 指型：4弦1品、3弦3品、2弦4品、1弦2品。" },
+            "A":    { frets: [2, 1, 0, 0], baseFret: 1, tip: "中指4弦2品(A)、食指3弦1品(C#)，第2、1弦開放。" },
+            "Am":   { frets: [2, 0, 0, 0], baseFret: 1, tip: "中指按第4弦2品(A)，其餘三弦全開放，最簡單的入門和弦。" },
+            "Adim": { frets: [2, 3, 2, 3], baseFret: 1, tip: "4弦2品(A)、3弦3品(Eb)、2弦2品(Gb)、1弦3品(C)。" },
+            "A#m":  { frets: [3, 1, 1, 1], baseFret: 1, tip: "食指橫按1品，無名指按4弦3品(A#)。" },
+            "A#dim":{ frets: [0, 1, 0, 1], baseFret: 1, tip: "4弦開放(G)、3弦1品(C#)、2弦開放(E)、1弦1品(A#)。" },
+            "Bb":   { frets: [3, 2, 1, 1], baseFret: 1, tip: "食指橫按2、1弦第1品，中指3弦2品(D)、無名指4弦3品(Bb)。" },
+            "Bbm":  { frets: [3, 1, 1, 1], baseFret: 1, tip: "食指橫按3、2、1弦第1品，無名指4弦3品(Bb)。" },
+            "B":    { frets: [4, 3, 2, 2], baseFret: 2, tip: "食指橫按2、1弦第2品，中指3弦3品(D#)、無名指4弦4品(B)。" },
+            "Bm":   { frets: [4, 2, 2, 2], baseFret: 2, tip: "食指橫按3、2、1弦第2品，無名指按4弦4品(B)。" },
+            "Bdim": { frets: [4, 2, 1, 2], baseFret: 1, tip: "小指4弦4品(B)、中指3弦2品(D)、食指2弦1品(F)、無名指1弦2品(B)。" },
+            "Cb":   { frets: [4, 3, 2, 2], baseFret: 2, tip: "同 B 大三和弦指型：4弦4品、3弦3品、2與1弦2品。" }
+        };
 
-        function playChord(chordName, chordObj) {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                let cleanName = chordName.replace('m', '').replace('dim', '').replace('b', '').replace('#', '');
-                let base = baseFreqs[cleanName] || 261.63;
-                let freqs = [base, base * 1.25, base * 1.5];
-                
-                freqs.forEach(freq => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.8);
-                });
-            } catch (e) {
-                console.log("Audio blocked");
+        function computeBowedOrBassChart(info, instrument) {
+            const configs = {
+                bass:   { names: ["E", "A", "D", "G"], openPcs: [4, 9, 2, 7], maxFret: 5 },
+                violin: { names: ["G", "D", "A", "E"], openPcs: [7, 2, 9, 4], maxFret: 7 },
+                cello:  { names: ["C", "G", "D", "A"], openPcs: [0, 7, 2, 9], maxFret: 7 }
+            };
+            const cfg = configs[instrument];
+            const frets = [-1, -1, -1, -1];
+            const roles = ["", "", "", ""];
+
+            let rootStr = 0;
+            let rootFret = 0;
+            let bestScore = 999;
+            cfg.openPcs.forEach((op, sIdx) => {
+                const f = (info.rootPc - op + 12) % 12;
+                if (f <= cfg.maxFret) {
+                    const score = sIdx * 5 + f;
+                    if (score < bestScore) {
+                        bestScore = score;
+                        rootStr = sIdx;
+                        rootFret = f;
+                    }
+                }
+            });
+            frets[rootStr] = rootFret;
+            roles[rootStr] = "R";
+
+            const thirdPc = info.pcs[1];
+            const fifthPc = info.pcs[2];
+            for (let s = 0; s < 4; s++) {
+                if (s === rootStr) continue;
+                const f5 = (fifthPc - cfg.openPcs[s] + 12) % 12;
+                const f3 = (thirdPc - cfg.openPcs[s] + 12) % 12;
+                if (instrument === "bass") {
+                    if (s === rootStr + 1 && f5 <= cfg.maxFret) {
+                        frets[s] = f5;
+                        roles[s] = info.quality === "dim" ? "b5" : "5";
+                    } else if (s === rootStr + 2 && rootFret <= cfg.maxFret) {
+                        frets[s] = rootFret;
+                        roles[s] = "8";
+                    }
+                } else {
+                    if (f3 <= cfg.maxFret && !roles.includes("3")) {
+                        frets[s] = f3;
+                        roles[s] = "3";
+                    } else if (f5 <= cfg.maxFret && !roles.includes("5")) {
+                        frets[s] = f5;
+                        roles[s] = info.quality === "dim" ? "b5" : "5";
+                    }
+                }
+            }
+            return { names: cfg.names, frets, roles, rootStr, rootFret };
+        }
+
+        function renderFretboardSVG(stringNames, frets, baseFret = 1, roleLabels = null, isBowed = false) {
+            const numStrings = stringNames.length;
+            const numFrets = 5;
+            const leftPad = 34;
+            const topPad = 32;
+            const strGap = numStrings === 6 ? 24 : 32;
+            const fretGap = 28;
+            const width = leftPad + (numStrings - 1) * strGap + 26;
+            const height = topPad + numFrets * fretGap + 24;
+
+            let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+
+            if (baseFret === 1) {
+                svg += `<line x1="${leftPad}" y1="${topPad}" x2="${leftPad + (numStrings - 1) * strGap}" y2="${topPad}" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>`;
+            } else {
+                svg += `<text x="${leftPad - 10}" y="${topPad + fretGap * 0.65}" fill="#818cf8" font-size="11" font-weight="700" text-anchor="end">${baseFret}fr</text>`;
             }
 
-            if (chordObj) {
-                updateVisualizer(chordObj);
+            for (let f = 0; f <= numFrets; f++) {
+                const y = topPad + f * fretGap;
+                const dash = isBowed && f > 0 ? `stroke-dasharray="3,3"` : "";
+                svg += `<line x1="${leftPad}" y1="${y}" x2="${leftPad + (numStrings - 1) * strGap}" y2="${y}" stroke="#475569" stroke-width="1.2" ${dash}/>`;
+            }
+
+            for (let s = 0; s < numStrings; s++) {
+                const x = leftPad + s * strGap;
+                const strokeW = 1.2 + (numStrings - 1 - s) * 0.25;
+                svg += `<line x1="${x}" y1="${topPad}" x2="${x}" y2="${topPad + numFrets * fretGap}" stroke="#94a3b8" stroke-width="${strokeW}"/>`;
+                svg += `<text x="${x}" y="12" fill="#94a3b8" font-size="11" font-weight="700" text-anchor="middle">${stringNames[s]}</text>`;
+
+                const fret = frets[s];
+                if (fret === -1) {
+                    svg += `<text x="${x}" y="25" fill="#ef4444" font-size="11" font-weight="700" text-anchor="middle">×</text>`;
+                } else if (fret === 0) {
+                    svg += `<circle cx="${x}" cy="21" r="4.5" fill="none" stroke="#34d399" stroke-width="1.8"/>`;
+                } else {
+                    const relFret = fret - baseFret + 1;
+                    if (relFret >= 1 && relFret <= numFrets) {
+                        const cy = topPad + (relFret - 0.5) * fretGap;
+                        const isRoot = roleLabels && roleLabels[s] === "R";
+                        const fill = isRoot ? "#34d399" : "#818cf8";
+                        const textColor = isRoot ? "#064e3b" : "#0f172a";
+                        const label = (roleLabels && roleLabels[s]) ? roleLabels[s] : fret;
+                        svg += `<circle cx="${x}" cy="${cy}" r="9" fill="${fill}"/>`;
+                        svg += `<text x="${x}" y="${cy + 3.5}" fill="${textColor}" font-size="10" font-weight="800" text-anchor="middle">${label}</text>`;
+                    }
+                }
+            }
+            svg += `</svg>`;
+            return svg;
+        }
+
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === "suspended") audioCtx.resume();
+            return audioCtx;
+        }
+
+        function makeDistortionCurve(amount) {
+            const n = 44100;
+            const curve = new Float32Array(n);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n; ++i) {
+                const x = (i * 2) / n - 1;
+                curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
+            }
+            return curve;
+        }
+
+        function playKarplusStrongNote(ctx, freq, startTime, duration, damping, brightness, gainVal, mode = "acoustic") {
+            const sr = ctx.sampleRate;
+            const period = Math.max(2, Math.round(sr / freq));
+            const totalSamples = Math.max(period + 1, Math.floor(sr * duration));
+            const buffer = ctx.createBuffer(1, totalSamples, sr);
+            const data = buffer.getChannelData(0);
+
+            let prevNoise = 0;
+            for (let i = 0; i < period; i++) {
+                const white = Math.random() * 2 - 1;
+                prevNoise = brightness * white + (1 - brightness) * prevNoise;
+                data[i] = prevNoise;
+            }
+
+            for (let i = period; i < totalSamples; i++) {
+                data[i] = damping * 0.5 * (data[i - period] + data[i - period + 1]);
+            }
+
+            const src = ctx.createBufferSource();
+            src.buffer = buffer;
+
+            const amp = ctx.createGain();
+            amp.gain.setValueAtTime(gainVal, startTime);
+            amp.gain.setValueAtTime(gainVal, startTime + duration * 0.72);
+            amp.gain.exponentialRampToValueAtTime(0.0005, startTime + duration);
+
+            if (mode === "electric") {
+                const shaper = ctx.createWaveShaper();
+                shaper.curve = makeDistortionCurve(35);
+                shaper.oversample = "2x";
+
+                const cabFilter = ctx.createBiquadFilter();
+                cabFilter.type = "lowpass";
+                cabFilter.frequency.setValueAtTime(2400, startTime);
+                cabFilter.Q.setValueAtTime(1.4, startTime);
+
+                src.connect(shaper);
+                shaper.connect(cabFilter);
+                cabFilter.connect(amp);
+            } else if (mode === "bass") {
+                const bassBoost = ctx.createBiquadFilter();
+                bassBoost.type = "lowshelf";
+                bassBoost.frequency.setValueAtTime(110, startTime);
+                bassBoost.gain.setValueAtTime(8, startTime);
+
+                const lp = ctx.createBiquadFilter();
+                lp.type = "lowpass";
+                lp.frequency.setValueAtTime(650, startTime);
+
+                src.connect(bassBoost);
+                bassBoost.connect(lp);
+                lp.connect(amp);
+            } else if (mode === "ukulele") {
+                const body = ctx.createBiquadFilter();
+                body.type = "peaking";
+                body.frequency.setValueAtTime(460, startTime);
+                body.Q.setValueAtTime(1.8, startTime);
+                body.gain.setValueAtTime(5, startTime);
+
+                src.connect(body);
+                body.connect(amp);
+            } else {
+                const body = ctx.createBiquadFilter();
+                body.type = "peaking";
+                body.frequency.setValueAtTime(180, startTime);
+                body.Q.setValueAtTime(1.5, startTime);
+                body.gain.setValueAtTime(4.5, startTime);
+
+                src.connect(body);
+                body.connect(amp);
+            }
+
+            amp.connect(ctx.destination);
+            src.start(startTime);
+        }
+
+        function playPianoNote(ctx, freq, startTime, duration, gainVal) {
+            const harmonics = [
+                { mult: 1, amp: 1.0, dec: duration },
+                { mult: 2.001, amp: 0.42, dec: duration * 0.75 },
+                { mult: 3.003, amp: 0.18, dec: duration * 0.5 },
+                { mult: 4.008, amp: 0.08, dec: duration * 0.32 }
+            ];
+            harmonics.forEach(h => {
+                const osc = ctx.createOscillator();
+                const g = ctx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(freq * h.mult, startTime);
+
+                g.gain.setValueAtTime(0.0001, startTime);
+                g.gain.linearRampToValueAtTime(gainVal * h.amp, startTime + 0.006);
+                g.gain.exponentialRampToValueAtTime(0.0001, startTime + h.dec);
+
+                osc.connect(g);
+                g.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + h.dec + 0.02);
+            });
+        }
+
+        // 小提琴合成：明亮中高音弦樂共鳴、弓速較快、細膩揉弦與高頻光澤
+        function playViolinNote(ctx, freq, startTime, duration, gainVal) {
+            const oscMain = ctx.createOscillator();
+            const oscShimmer = ctx.createOscillator();
+            oscMain.type = "sawtooth";
+            oscShimmer.type = "triangle";
+            oscMain.frequency.setValueAtTime(freq * 0.999, startTime);
+            oscShimmer.frequency.setValueAtTime(freq * 2.002, startTime);
+
+            const formantMid = ctx.createBiquadFilter();
+            formantMid.type = "peaking";
+            formantMid.frequency.setValueAtTime(1450, startTime);
+            formantMid.Q.setValueAtTime(2.6, startTime);
+            formantMid.gain.setValueAtTime(7.5, startTime);
+
+            const highpass = ctx.createBiquadFilter();
+            highpass.type = "highpass";
+            highpass.frequency.setValueAtTime(220, startTime);
+
+            const lowpass = ctx.createBiquadFilter();
+            lowpass.type = "lowpass";
+            lowpass.frequency.setValueAtTime(4200, startTime);
+
+            const shimmerGain = ctx.createGain();
+            shimmerGain.gain.setValueAtTime(gainVal * 0.22, startTime);
+
+            const vibrato = ctx.createOscillator();
+            const vibGain = ctx.createGain();
+            vibrato.frequency.setValueAtTime(5.8, startTime);
+            vibGain.gain.setValueAtTime(0, startTime);
+            vibGain.gain.linearRampToValueAtTime(freq * 0.0055, startTime + 0.25);
+            vibrato.connect(vibGain);
+            vibGain.connect(oscMain.frequency);
+
+            const amp = ctx.createGain();
+            const attack = 0.09;
+            amp.gain.setValueAtTime(0.0001, startTime);
+            amp.gain.linearRampToValueAtTime(gainVal, startTime + attack);
+            amp.gain.setValueAtTime(gainVal * 0.92, startTime + Math.max(attack + 0.05, duration - 0.14));
+            amp.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+            oscMain.connect(formantMid);
+            oscShimmer.connect(shimmerGain);
+            shimmerGain.connect(formantMid);
+            formantMid.connect(highpass);
+            highpass.connect(lowpass);
+            lowpass.connect(amp);
+            amp.connect(ctx.destination);
+
+            oscMain.start(startTime);
+            oscShimmer.start(startTime);
+            vibrato.start(startTime);
+
+            oscMain.stop(startTime + duration + 0.03);
+            oscShimmer.stop(startTime + duration + 0.03);
+            vibrato.stop(startTime + duration + 0.03);
+        }
+
+        // 大提琴合成：深沉厚實胸腔共鳴、弓起音較慢、暖潤低中頻
+        function playCelloNote(ctx, freq, startTime, duration, gainVal) {
+            const oscBody = ctx.createOscillator();
+            const oscSub = ctx.createOscillator();
+            oscBody.type = "sawtooth";
+            oscSub.type = "sine";
+            oscBody.frequency.setValueAtTime(freq * 1.0005, startTime);
+            oscSub.frequency.setValueAtTime(freq * 0.5, startTime);
+
+            const chestRes = ctx.createBiquadFilter();
+            chestRes.type = "peaking";
+            chestRes.frequency.setValueAtTime(260, startTime);
+            chestRes.Q.setValueAtTime(2.0, startTime);
+            chestRes.gain.setValueAtTime(8.0, startTime);
+
+            const lowpass = ctx.createBiquadFilter();
+            lowpass.type = "lowpass";
+            lowpass.frequency.setValueAtTime(920, startTime);
+
+            const subGain = ctx.createGain();
+            subGain.gain.setValueAtTime(gainVal * 0.35, startTime);
+
+            const vibrato = ctx.createOscillator();
+            const vibGain = ctx.createGain();
+            vibrato.frequency.setValueAtTime(4.2, startTime);
+            vibGain.gain.setValueAtTime(0, startTime);
+            vibGain.gain.linearRampToValueAtTime(freq * 0.0038, startTime + 0.42);
+            vibrato.connect(vibGain);
+            vibGain.connect(oscBody.frequency);
+
+            const amp = ctx.createGain();
+            const attack = 0.22;
+            amp.gain.setValueAtTime(0.0001, startTime);
+            amp.gain.linearRampToValueAtTime(gainVal, startTime + attack);
+            amp.gain.setValueAtTime(gainVal * 0.9, startTime + Math.max(attack + 0.05, duration - 0.16));
+            amp.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+            oscBody.connect(chestRes);
+            oscSub.connect(subGain);
+            subGain.connect(chestRes);
+            chestRes.connect(lowpass);
+            lowpass.connect(amp);
+            amp.connect(ctx.destination);
+
+            oscBody.start(startTime);
+            oscSub.start(startTime);
+            vibrato.start(startTime);
+
+            oscBody.stop(startTime + duration + 0.04);
+            oscSub.stop(startTime + duration + 0.04);
+            vibrato.stop(startTime + duration + 0.04);
+        }
+
+        function playInstrumentChord(chordName, instrumentType) {
+            const info = parseChord(chordName);
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (instrumentType === "piano") {
+                    const bassMidi = 48 + info.rootPc;
+                    playPianoNote(ctx, midiToFreq(bassMidi), now, 1.35, 0.14);
+                    info.intervals.forEach(iv => {
+                        const midi = 60 + info.rootPc + iv;
+                        playPianoNote(ctx, midiToFreq(midi), now, 1.25, 0.11);
+                    });
+                } else if (instrumentType === "acoustic") {
+                    const shape = guitarShapes[chordName];
+                    const openMidis = [40, 45, 50, 55, 59, 64];
+                    let strumIdx = 0;
+                    shape.frets.forEach((f, sIdx) => {
+                        if (f >= 0) {
+                            const freq = midiToFreq(openMidis[sIdx] + f);
+                            playKarplusStrongNote(ctx, freq, now + strumIdx * 0.035, 1.3, 0.9962, 0.58, 0.17, "acoustic");
+                            strumIdx++;
+                        }
+                    });
+                } else if (instrumentType === "electric") {
+                    const shape = guitarShapes[chordName];
+                    const openMidis = [40, 45, 50, 55, 59, 64];
+                    let strumIdx = 0;
+                    shape.frets.forEach((f, sIdx) => {
+                        if (f >= 0) {
+                            const freq = midiToFreq(openMidis[sIdx] + f);
+                            playKarplusStrongNote(ctx, freq, now + strumIdx * 0.02, 1.45, 0.9984, 0.88, 0.11, "electric");
+                            strumIdx++;
+                        }
+                    });
+                } else if (instrumentType === "bass") {
+                    const rootMidi = 28 + ((info.rootPc - 4 + 12) % 12);
+                    const fifthOffset = info.quality === "dim" ? 6 : 7;
+                    playKarplusStrongNote(ctx, midiToFreq(rootMidi), now, 0.85, 0.997, 0.25, 0.34, "bass");
+                    playKarplusStrongNote(ctx, midiToFreq(rootMidi + fifthOffset), now + 0.32, 0.65, 0.996, 0.25, 0.26, "bass");
+                } else if (instrumentType === "ukulele") {
+                    const shape = ukuleleShapes[chordName];
+                    const openMidis = [67, 60, 64, 69];
+                    shape.frets.forEach((f, sIdx) => {
+                        if (f >= 0) {
+                            const freq = midiToFreq(openMidis[sIdx] + f);
+                            playKarplusStrongNote(ctx, freq, now + sIdx * 0.026, 0.82, 0.992, 0.52, 0.19, "ukulele");
+                        }
+                    });
+                } else if (instrumentType === "violin") {
+                    const baseMidi = 67 + info.rootPc;
+                    const isMinor = info.quality === "m";
+                    info.intervals.forEach((iv, idx) => {
+                        const midi = (baseMidi + iv) > 84 ? (baseMidi + iv - 12) : (baseMidi + iv);
+                        const freq = midiToFreq(midi);
+                        const gainScale = isMinor && idx === 1 ? 0.085 : 0.095;
+                        playViolinNote(ctx, freq, now + idx * 0.11, 1.15, gainScale);
+                    });
+                } else if (instrumentType === "cello") {
+                    const baseMidi = 36 + info.rootPc;
+                    info.intervals.forEach((iv, idx) => {
+                        const midi = (baseMidi + iv) > 57 ? (baseMidi + iv - 12) : (baseMidi + iv);
+                        const freq = midiToFreq(midi);
+                        playCelloNote(ctx, freq, now + idx * 0.14, 1.25, idx === 0 ? 0.16 : 0.11);
+                    });
+                }
+            } catch (e) {
+                console.warn("Audio error:", e);
             }
         }
 
-        function updateVisualizer(chordObj) {
-            document.getElementById("activeChordTitle").innerText = `目前選中和弦：${chordObj.name} (${chordObj.role} 級)`;
-            
-            document.querySelectorAll('.p-key').forEach(k => k.classList.remove('active'));
-            if (chordObj.notes) {
-                chordObj.notes.forEach(n => {
-                    let baseNote = n.replace('b', '').replace('#', '');
-                    let keyEl = document.querySelector(`.p-key[data-note="${baseNote}"]`) || document.querySelector(`.p-key[data-note="${n}"]`);
-                    if (keyEl) keyEl.classList.add('active');
+        let currentInstrument = "piano";
+        let currentChordName = "C";
+        let currentChordRole = "I";
+        let currentChordNotes = ["C", "E", "G"];
+        let userCustomProgression = [];
+
+        function initPianoKeyboard() {
+            const container = document.getElementById("pianoKeys");
+            container.innerHTML = "";
+            const whiteNotes = [
+                { pc: 0, label: "C" }, { pc: 2, label: "D" }, { pc: 4, label: "E" },
+                { pc: 5, label: "F" }, { pc: 7, label: "G" }, { pc: 9, label: "A" }, { pc: 11, label: "B" }
+            ];
+            const blackOffsets = [
+                { pc: 1, label: "C#", left: 25 },
+                { pc: 3, label: "Eb", left: 61 },
+                { pc: 6, label: "F#", left: 133 },
+                { pc: 8, label: "Ab", left: 169 },
+                { pc: 10, label: "Bb", left: 205 }
+            ];
+
+            for (let oct = 0; oct < 2; oct++) {
+                whiteNotes.forEach(w => {
+                    const key = document.createElement("div");
+                    key.className = "p-key white";
+                    key.dataset.keyIdx = oct * 12 + w.pc;
+                    key.innerText = w.label;
+                    container.appendChild(key);
+                });
+                blackOffsets.forEach(b => {
+                    const key = document.createElement("div");
+                    key.className = "p-key black";
+                    key.dataset.keyIdx = oct * 12 + b.pc;
+                    key.style.left = (oct * 252 + b.left) + "px";
+                    key.innerText = b.label;
+                    container.appendChild(key);
                 });
             }
+        }
 
-            document.getElementById("acousticFingering").innerText = chordObj.acoustic;
-            document.getElementById("electricFingering").innerText = chordObj.electric;
-            document.getElementById("bassFingering").innerText = chordObj.bass;
-            document.getElementById("ukuleleFingering").innerText = chordObj.ukulele;
-            document.getElementById("violinFingering").innerText = chordObj.violin;
-            document.getElementById("celloFingering").innerText = chordObj.cello;
+        function updateVisualizer() {
+            const info = parseChord(currentChordName);
+            document.getElementById("activeChordTitle").innerText = `目前選中和弦：${currentChordName} (${currentChordRole} 級)`;
+            document.getElementById("chordNotesInfo").innerText = `和弦組成音：${currentChordNotes.join(" - ")} ｜ ${info.qualityLabel}`;
+
+            const pianoPanel = document.getElementById("panel-piano");
+            const stringPanel = document.getElementById("panel-string");
+
+            if (currentInstrument === "piano") {
+                pianoPanel.style.display = "block";
+                stringPanel.style.display = "none";
+
+                document.querySelectorAll(".p-key").forEach(k => {
+                    k.classList.remove("active", "root-key");
+                });
+                info.intervals.forEach((iv, idx) => {
+                    const keyIdx = info.rootPc + iv;
+                    const keyEl = document.querySelector(`.p-key[data-key-idx="${keyIdx}"]`);
+                    if (keyEl) {
+                        keyEl.classList.add(idx === 0 ? "root-key" : "active");
+                    }
+                });
+            } else {
+                pianoPanel.style.display = "none";
+                stringPanel.style.display = "block";
+
+                const svgWrap = document.getElementById("fretboardSvgContainer");
+                const guideWrap = document.getElementById("instrumentGuideText");
+
+                if (currentInstrument === "acoustic" || currentInstrument === "electric") {
+                    const shape = guitarShapes[currentChordName];
+                    const fretStr = shape.frets.map(f => f === -1 ? "X" : f).join(" ");
+                    svgWrap.innerHTML = renderFretboardSVG(["E", "A", "D", "G", "B", "e"], shape.frets, shape.baseFret) +
+                        `<div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">六線譜數字：${fretStr}</div>`;
+
+                    const instTitle = currentInstrument === "acoustic" ? "🎸 木吉他 (Acoustic Guitar) 指法" : "⚡ 電吉他 (Electric Guitar) 指法";
+                    const extraTip = currentInstrument === "electric"
+                        ? `搖滾／流行伴奏也可用根音 <b>${info.root}</b> 搭配五度音彈奏 Power Chord（強力五和弦）。`
+                        : `刷奏時從標示數字或圓圈（○）的琴弦向下刷，標示「×」的弦需避開或輕觸悶音。`;
+
+                    guideWrap.innerHTML = `
+                        <h4>${instTitle} — ${currentChordName}</h4>
+                        <ul>
+                            <li><b>指法口訣（第6弦→第1弦）：</b><code>${fretStr}</code></li>
+                            <li><b>按弦要領：</b>${shape.tip}</li>
+                            <li><b>編曲建議：</b>${extraTip}</li>
+                        </ul>`;
+                } else if (currentInstrument === "ukulele") {
+                    const shape = ukuleleShapes[currentChordName];
+                    const fretStr = shape.frets.map(f => f === -1 ? "X" : f).join(" ");
+                    svgWrap.innerHTML = renderFretboardSVG(["G", "C", "E", "A"], shape.frets, shape.baseFret) +
+                        `<div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">四線譜數字：${fretStr}</div>`;
+
+                    guideWrap.innerHTML = `
+                        <h4>🎵 烏克麗麗 (Ukulele) 指法 — ${currentChordName}</h4>
+                        <ul>
+                            <li><b>指法口訣（第4弦→第1弦）：</b><code>${fretStr}</code></li>
+                            <li><b>按弦要領：</b>${shape.tip}</li>
+                            <li><b>組成音確認：</b>四條弦發出的音高皆屬於 <b>${currentChordNotes.join("、")}</b>。</li>
+                        </ul>`;
+                } else if (currentInstrument === "bass") {
+                    const chart = computeBowedOrBassChart(info, "bass");
+                    svgWrap.innerHTML = renderFretboardSVG(chart.names, chart.frets, 1, chart.roles, false) +
+                        `<div class="legend-row"><span><i class="dot-legend" style="background:#34d399;"></i>R 根音</span><span><i class="dot-legend" style="background:#818cf8;"></i>5 五度 / 8 八度</span></div>`;
+
+                    guideWrap.innerHTML = `
+                        <h4>🎸 電 Bass (Electric Bass) 把位 — ${currentChordName}</h4>
+                        <ul>
+                            <li><b>核心根音 (R)：</b>第 ${4 - chart.rootStr} 弦（${chart.names[chart.rootStr]} 弦）第 <b>${chart.rootFret}</b> 格（${info.root} 音）。</li>
+                            <li><b>伴奏線條：</b>先穩住根音 <b>${info.root}</b> 搭配底鼓節奏，過門時可加上圖中標示的 <b>${info.quality === "dim" ? "減五度 (b5)" : "五度音 (5)"}</b> 與 <b>八度音 (8)</b>。</li>
+                        </ul>`;
+                } else if (currentInstrument === "violin" || currentInstrument === "cello") {
+                    const chart = computeBowedOrBassChart(info, currentInstrument);
+                    const isCello = currentInstrument === "cello";
+                    svgWrap.innerHTML = renderFretboardSVG(chart.names, chart.frets, 1, chart.roles, true) +
+                        `<div class="legend-row"><span><i class="dot-legend" style="background:#34d399;"></i>R 根音</span><span><i class="dot-legend" style="background:#818cf8;"></i>3 三音 / 5 五音</span></div>`;
+
+                    const title = isCello ? "🎻 大提琴 (Cello) 第一把位音位" : "🎻 小提琴 (Violin) 第一把位音位";
+                    const tip = isCello
+                        ? `大提琴負責和聲低音支撐，圖中標示了第一把位內的 <b>根音 (R)</b>、<b>三音 (3)</b> 與 <b>五音 (5)</b>，可用長音或分解琶音伴奏。`
+                        : `小提琴通常以旋律線、分解琶音或雙音（Double Stop）表現和弦色彩，試聽時已為您依序拉奏 <b>${currentChordNotes.join(" → ")}</b>。`;
+
+                    guideWrap.innerHTML = `
+                        <h4>${title} — ${currentChordName}</h4>
+                        <ul>
+                            <li><b>和弦內音：</b>${currentChordNotes.join(" - ")}（0 為空弦，數字代表半音格位）。</li>
+                            <li><b>演奏方式：</b>${tip}</li>
+                        </ul>`;
+                }
+            }
         }
 
         function switchInstrument(type) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.instrument-panel').forEach(panel => panel.classList.remove('active'));
+            currentInstrument = type;
+            document.querySelectorAll(".tab-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.dataset.inst === type);
+            });
+            updateVisualizer();
+            playInstrumentChord(currentChordName, currentInstrument);
+        }
 
-            const panels = {
-                'piano': 0, 'acoustic': 1, 'electric': 2, 'bass': 3, 'ukulele': 4, 'violin': 5, 'cello': 6
-            };
-            
-            const btnList = document.querySelectorAll('.tab-btn');
-            const panelList = document.querySelectorAll('.instrument-panel');
-            
-            if(btnList[panels[type]]) btnList[panels[type]].classList.add('active');
-            if(panelList[panels[type]]) panelList[panels[type]].classList.add('active');
+        function replayCurrentChord() {
+            playInstrumentChord(currentChordName, currentInstrument);
+        }
+
+        function selectChord(chordName, role, notes, addToBuilder = true) {
+            currentChordName = chordName;
+            currentChordRole = role;
+            currentChordNotes = notes;
+            const info = parseChord(chordName);
+
+            document.querySelectorAll(".chord-btn").forEach(b => {
+                b.classList.toggle("selected", b.dataset.chord === chordName);
+            });
+
+            updateVisualizer();
+            playInstrumentChord(chordName, currentInstrument);
+
+            if (addToBuilder) {
+                userCustomProgression.push(chordName);
+                renderCustomSlots();
+            }
+            const moodTag = info.quality === "m" ? "小調色彩（小三度＋純五度）" : (info.quality === "dim" ? "減三和弦色彩（小三度＋減五度）" : "大調色彩（大三度＋純五度）");
+            document.getElementById("currentProgression").innerText = `正在試聽：${chordName} (${role} 級) ｜ ${notes.join(" - ")} ｜ ${moodTag}`;
         }
 
         function onKeyChange() {
@@ -778,57 +1329,91 @@
         function updateChords() {
             const selectedKey = document.getElementById("keySelect").value;
             const data = chordData[selectedKey];
-            
             const grid = document.getElementById("chordGrid");
             grid.innerHTML = "";
-            data.chords.forEach(chord => {
+
+            data.chords.forEach(([cName, role, notes], idx) => {
                 const btn = document.createElement("div");
-                btn.className = "chord-btn";
+                btn.className = "chord-btn" + (idx === 0 ? " selected" : "");
+                btn.dataset.chord = cName;
                 btn.innerHTML = `
-                    <div class="chord-name">${chord.name}</div>
-                    <div class="chord-role">${chord.role} 級</div>
+                    <div class="chord-name">${cName}</div>
+                    <div class="chord-role">${role} 級</div>
                 `;
-                btn.onclick = () => {
-                    playChord(chord.name, chord);
-                    addToCustom(chord.name);
-                    document.getElementById("currentProgression").innerText = `試聽與查看指法：${chord.name}`;
-                };
+                btn.onclick = () => selectChord(cName, role, notes, true);
                 grid.appendChild(btn);
             });
 
-            if(data.chords.length > 0) {
-                updateVisualizer(data.chords[0]);
-            }
+            const [firstC, firstRole, firstNotes] = data.chords[0];
+            currentChordName = firstC;
+            currentChordRole = firstRole;
+            currentChordNotes = firstNotes;
+            updateVisualizer();
 
             const progContainer = document.getElementById("progressionContainer");
             progContainer.innerHTML = "";
-            if (data.progressions) {
-                data.progressions.forEach((prog, index) => {
-                    const progDiv = document.createElement("div");
-                    progDiv.className = "progression-item";
-                    progDiv.innerHTML = `
-                        <span class="progression-text">模式 ${index + 1}：${prog.join(" — ")}</span>
-                        <span class="play-tag">▶ 播放試聽</span>
-                    `;
-                    progDiv.onclick = () => {
-                        document.getElementById("currentProgression").innerText = `正在播放推薦走向：${prog.join(" - ")}`;
-                        prog.forEach((cName, i) => {
-                            setTimeout(() => {
-                                let matchChord = data.chords.find(x => x.name === cName) || data.chords[0];
-                                playChord(cName, matchChord);
-                            }, i * 650);
-                        });
-                    };
-                    progContainer.appendChild(progDiv);
-                });
-            } else {
-                progContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 15px;">此調目前無預設走向</div>`;
-            }
+            data.progressions.forEach((pObj, index) => {
+                const progDiv = document.createElement("div");
+                progDiv.className = "progression-item";
+                progDiv.innerHTML = `
+                    <div>
+                        <div class="progression-text">模式 ${index + 1}：${pObj.chords.join(" — ")}</div>
+                        <div class="progression-desc">${pObj.desc}</div>
+                    </div>
+                    <span class="play-tag">▶ 連續試聽</span>
+                `;
+                progDiv.onclick = () => playSequence(pObj.chords, `推薦走向 (${pObj.desc})`);
+                progContainer.appendChild(progDiv);
+            });
         }
 
-        function addToCustom(chordName) {
-            userCustomProgression.push(chordName);
+        function playSequence(chordList, label) {
+            const selectedKey = document.getElementById("keySelect").value;
+            const data = chordData[selectedKey];
+            document.getElementById("currentProgression").innerText = `${label}：${chordList.join(" — ")}`;
+
+            chordList.forEach((cName, i) => {
+                setTimeout(() => {
+                    const found = data.chords.find(x => x[0] === cName);
+                    const role = found ? found[1] : "";
+                    const notes = found ? found[2] : parseChord(cName).pcs.map(p => sharpNames[p]);
+                    selectChord(cName, role, notes, false);
+                }, i * 750);
+            });
+        }
+
+        function renderCustomSlots() {
+            const container = document.getElementById("customSlots");
+            if (userCustomProgression.length === 0) {
+                container.innerHTML = `<span class="empty-slot-text">請從上方點擊和弦加入組合，或按「🎲 隨機靈感搭配」...</span>`;
+                return;
+            }
+            container.innerHTML = "";
+            userCustomProgression.forEach((c, idx) => {
+                const tag = document.createElement("div");
+                tag.className = "slot-tag";
+                tag.title = "點擊移除此和弦";
+                tag.innerHTML = `<span>${idx + 1}. ${c}</span><span style="font-size:0.75rem;opacity:0.75;">✕</span>`;
+                tag.onclick = () => {
+                    userCustomProgression.splice(idx, 1);
+                    renderCustomSlots();
+                };
+                container.appendChild(tag);
+            });
+        }
+
+        function generateRandomProgression() {
+            const selectedKey = document.getElementById("keySelect").value;
+            const chords = chordData[selectedKey].chords;
+            const stablePool = chords.slice(0, 6);
+            const result = [chords[0][0]];
+            for (let i = 1; i < 4; i++) {
+                const pick = stablePool[Math.floor(Math.random() * stablePool.length)][0];
+                result.push(pick);
+            }
+            userCustomProgression = result;
             renderCustomSlots();
+            playSequence(userCustomProgression, "🎲 隨機靈感組合");
         }
 
         function clearCustomProgression() {
@@ -837,39 +1422,18 @@
             document.getElementById("currentProgression").innerText = "已清空自定義組合";
         }
 
-        function renderCustomSlots() {
-            const container = document.getElementById("customSlots");
-            if (userCustomProgression.length === 0) {
-                container.innerHTML = `<span class="empty-slot-text">請從上方點擊和弦加入組合...</span>`;
-                return;
-            }
-            container.innerHTML = "";
-            userCustomProgression.forEach((c, idx) => {
-                const tag = document.createElement("div");
-                tag.className = "slot-tag";
-                tag.innerHTML = `${idx + 1}. ${c}`;
-                container.appendChild(tag);
-            });
-        }
-
         function playCustomProgression() {
             if (userCustomProgression.length === 0) {
-                alert("請先點擊上方和弦加入自定義組合再播放！");
+                alert("請先點擊上方和弦加入組合，或按「🎲 隨機靈感搭配」！");
                 return;
             }
-            const selectedKey = document.getElementById("keySelect").value;
-            const data = chordData[selectedKey];
-            
-            document.getElementById("currentProgression").innerText = `正在播放自定義組合：${userCustomProgression.join(" — ")}`;
-            userCustomProgression.forEach((cName, i) => {
-                setTimeout(() => {
-                    let matchChord = data.chords.find(x => x.name === cName) || data.chords[0];
-                    playChord(cName, matchChord);
-                }, i * 650);
-            });
+            playSequence(userCustomProgression, "▶ 自定義和弦組合");
         }
 
-        window.onload = updateChords;
+        window.onload = () => {
+            initPianoKeyboard();
+            updateChords();
+        };
     </script>
 </body>
 </html>
